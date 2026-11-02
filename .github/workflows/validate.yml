@@ -35,11 +35,3 @@ jobs:
         uses: hacs/action@d556e736723344f83838d08488c983a15381059a # 22.5.0
         with:
           category: integration
-          # Brand images ship with the integration itself, in its brand/
-          # subfolder (icon.png 256px, icon@2x.png 512px, and the matching
-          # logo files) - the supported route for a custom integration since
-          # Home Assistant 2026.3. The 'brands' check looks
-          # for an entry in the home-assistant/brands repository instead, which
-          # only applies to integrations merged into Home Assistant core.
-          # https://developers.home-assistant.io/docs/creating_integration_file_structure#local-brand-images-for-custom-integrations
-          ignore: brands
