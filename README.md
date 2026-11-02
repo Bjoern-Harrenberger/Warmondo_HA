@@ -21,6 +21,7 @@ Einzelgerät und als Kaskade mit bis zu acht Geräten.
 - [Installation](#installation)
 - [Einrichtung](#einrichtung)
 - [Was Sie danach sehen](#was-sie-danach-sehen)
+- [Dashboard](#dashboard)
 - [Einstellungen ändern](#einstellungen-ändern)
 - [Störmeldung aufs Handy](#störmeldung-aufs-handy)
 - [Energie-Dashboard](#energie-dashboard)
@@ -135,6 +136,33 @@ Geräts jederzeit einschalten.
 Ihrer Anlage in aller Regel nicht verbaut (zum Beispiel Solar- oder
 Pufferfühler). Die Regelung meldet das so, und die Integration zeigt dann
 bewusst keinen Phantasiewert an.
+
+## Dashboard
+
+Die Integration bringt ein fertiges Dashboard mit. Es besteht nur aus
+Standardkarten von Home Assistant – es muss nichts zusätzlich installiert
+werden – und passt sich von selbst an Ihre Anlage an: an den Namen, die
+Baureihe, die Zahl der Wärmepumpen und die tatsächlich verbauten Fühler.
+
+1. *Einstellungen → Dashboards → Dashboard hinzufügen*.
+2. **Warmondo** auswählen, einen Namen vergeben, *Erstellen*.
+
+Es enthält vier Seiten:
+
+- **Übersicht** – Zustand, Störungen, Temperaturen, Leistung und
+  Leistungszahl, Arbeitszahlen, Bedienung von Betriebsart, Sollwerten,
+  Zonen und Warmwasser. Einstellungen, die gerade nicht wirken, sind
+  ausgeblendet: der feste Vorlauf-Sollwert etwa, solange die Zone einer
+  Heizkurve folgt, und die Kühlwerte im reinen Heizbetrieb.
+- **Verlauf** – Bilanz über 24 Stunden bis 365 Tage, Temperaturen,
+  Leistung und Leistungszahl der letzten 24 Stunden.
+- **Heizkurven** – gewählte Heiz- und Kühlkurve je Zone mit Diagramm.
+- **Wärmepumpen** – je Gerät der Kaskade Leistung, Verdichter, Vor- und
+  Rücklauf, Drücke, Abtauung und Störungen.
+
+Wer das Dashboard anpassen möchte: oben rechts über die drei Punkte
+*Dashboard bearbeiten → Kontrolle übernehmen*. Danach lässt es sich frei verändern, folgt aber
+späteren Verbesserungen der Vorlage nicht mehr automatisch.
 
 ## Einstellungen ändern
 

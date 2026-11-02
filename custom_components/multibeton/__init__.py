@@ -9,13 +9,17 @@ https://github.com/Bjoern-Harrenberger/Warmondo_HA
 from __future__ import annotations
 
 from datetime import timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import issue_registry as ir
-from homeassistant.loader import async_get_loaded_integration
+from homeassistant.loader import async_get_integration, async_get_loaded_integration
 
 from .api import MultibetonApiClient, MultibetonApiClientCommunicationError
 from .const import (
@@ -37,6 +41,7 @@ from .notify_faults import FaultNotifier
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.device_registry import DeviceEntry
+    from homeassistant.helpers.typing import ConfigType
 
     from .data import MultibetonConfigEntry
 
@@ -62,6 +67,14 @@ PLATFORMS: list[Platform] = [*READING_PLATFORMS, *WRITING_PLATFORMS]
 # an RTU-to-TCP gateway on the same network), so a short interval is cheap
 # and keeps readings current - unlike a rate-limited cloud API.
 SCAN_INTERVAL = timedelta(seconds=30)
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+#: The dashboard strategy offered under Settings -> Dashboards -> Add
+#: dashboard. Served by the integration itself, so a customer installs
+#: nothing besides it; see frontend/warmondo-dashboard.js.
+_DASHBOARD_JS = Path(__file__).parent / "frontend" / "warmondo-dashboard.js"
+_DASHBOARD_URL = f"/{DOMAIN}/warmondo-dashboard.js"
 
 # Unique-ID keys of entities that described module 0# from the plant device
 # before every module got a device of its own, plus the inverter block
@@ -104,6 +117,17 @@ def _platforms_for(entry: MultibetonConfigEntry) -> list[Platform]:
     if entry.data.get(CONF_READ_ONLY, DEFAULT_READ_ONLY):
         return READING_PLATFORMS
     return PLATFORMS
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:  # noqa: ARG001
+    """Serve the dashboard strategy once, for every entry alike."""
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(_DASHBOARD_URL, str(_DASHBOARD_JS), cache_headers=False)]
+    )
+    integration = await async_get_integration(hass, DOMAIN)
+    # The version in the URL makes browsers fetch the new file after an update.
+    add_extra_js_url(hass, f"{_DASHBOARD_URL}?v={integration.version}")
+    return True
 
 
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
