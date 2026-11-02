@@ -161,6 +161,21 @@ function unlessIn(card, entity, states) {
   return { ...card, visibility: [{ condition: "state", entity, state_not: states }] };
 }
 
+/**
+ * Show a card only while it has a value. Power and efficiency read
+ * unavailable while the plant stands still, and the work figures until
+ * enough energy has been counted; a warning badge would read as a fault.
+ */
+function whenAvailable(card) {
+  if (!card) return card;
+  return {
+    ...card,
+    visibility: [
+      { condition: "state", entity: card.entity, state_not: ["unavailable", "unknown"] },
+    ],
+  };
+}
+
 const FULL = { column_span: 3 };
 const FULL_CARD = { grid_options: { columns: "full" } };
 
@@ -196,15 +211,16 @@ function overviewView(t, dev) {
         tile(dev, "sensors_solar_temp", { installedOnly: true }),
       ]),
       section(t.power_now, "mdi:lightning-bolt", [
-        tile(dev, "active_capacity"),
-        tile(dev, "active_power_input"),
-        tile(dev, "cop_current"),
+        tile(dev, "system_status_current_mode"),
+        whenAvailable(tile(dev, "active_capacity")),
+        whenAvailable(tile(dev, "active_power_input")),
+        whenAvailable(tile(dev, "cop_current")),
       ]),
       section(t.balance, "mdi:chart-bar", [
-        tile(dev, "work_figure_24h", { name: `${t.work_figure} ${t.h24}` }),
-        tile(dev, "work_figure_7d", { name: `${t.work_figure} ${t.d7}` }),
-        tile(dev, "work_figure_30d", { name: `${t.work_figure} ${t.d30}` }),
-        tile(dev, "work_figure_365d", { name: `${t.work_figure} ${t.d365}` }),
+        whenAvailable(tile(dev, "work_figure_24h", { name: `${t.work_figure} ${t.h24}` })),
+        whenAvailable(tile(dev, "work_figure_7d", { name: `${t.work_figure} ${t.d7}` })),
+        whenAvailable(tile(dev, "work_figure_30d", { name: `${t.work_figure} ${t.d30}` })),
+        whenAvailable(tile(dev, "work_figure_365d", { name: `${t.work_figure} ${t.d365}` })),
         tile(dev, "heat_energy_24h", { name: `${t.heat} ${t.h24}` }),
         tile(dev, "electric_energy_24h", { name: `${t.electricity} ${t.h24}` }),
       ]),
@@ -233,12 +249,14 @@ function overviewView(t, dev) {
 }
 
 function historyView(t, dev) {
-  const graph = (title, keys) => {
-    const entities = compact(keys.map((key) => dev.get(key, { installedOnly: true })));
+  // Only fitted sensors in the temperature graph; power and efficiency are
+  // also drawn while the plant stands still, when they read unavailable.
+  const graph = (title, keys, installedOnly = false) => {
+    const entities = compact(keys.map((key) => dev.get(key, { installedOnly })));
     if (!entities.length) return undefined;
+    // No card title: the section heading above already names the graph.
     return {
       type: "history-graph",
-      title,
       hours_to_show: 24,
       entities: entities.map((entity) => ({ entity, name: dev.name(entity) })),
       ...FULL_CARD,
@@ -252,10 +270,10 @@ function historyView(t, dev) {
     max_columns: 3,
     sections: compact([
       section(t.balance, "mdi:chart-bar", [
-        tile(dev, "work_figure_24h", { name: `${t.work_figure} ${t.h24}` }),
-        tile(dev, "work_figure_7d", { name: `${t.work_figure} ${t.d7}` }),
-        tile(dev, "work_figure_30d", { name: `${t.work_figure} ${t.d30}` }),
-        tile(dev, "work_figure_365d", { name: `${t.work_figure} ${t.d365}` }),
+        whenAvailable(tile(dev, "work_figure_24h", { name: `${t.work_figure} ${t.h24}` })),
+        whenAvailable(tile(dev, "work_figure_7d", { name: `${t.work_figure} ${t.d7}` })),
+        whenAvailable(tile(dev, "work_figure_30d", { name: `${t.work_figure} ${t.d30}` })),
+        whenAvailable(tile(dev, "work_figure_365d", { name: `${t.work_figure} ${t.d365}` })),
         tile(dev, "heat_energy_7d", { name: `${t.heat} ${t.d7}` }),
         tile(dev, "electric_energy_7d", { name: `${t.electricity} ${t.d7}` }),
         tile(dev, "heat_energy_365d", { name: `${t.heat} ${t.d365}` }),
@@ -268,7 +286,7 @@ function historyView(t, dev) {
           "sensors_floor_heating_flow_temp",
           "sensors_climate_flow_temp",
           "sensors_curve_flow_temp_zone_a",
-        ]),
+        ], true),
       ], FULL),
       section(t.power_24h, "mdi:lightning-bolt", [
         graph(t.power_24h, ["active_capacity", "active_power_input"]),
@@ -279,27 +297,30 @@ function historyView(t, dev) {
 }
 
 function curvesView(t, dev) {
+  // The diagram only while a curve is selected: with none, the plate saying
+  // so would take a full-width panel to tell what the select already says.
+  const diagram = (mode, suffix) => {
+    const select = dev.get(`curve_select_${mode}_zone_${suffix}`);
+    const image = dev.get(`${mode}_curve_zone_${suffix}`);
+    if (!image) return undefined;
+    const card = {
+      type: "picture-entity",
+      entity: image,
+      show_name: false,
+      show_state: false,
+      ...FULL_CARD,
+    };
+    return unlessIn(card, select, ["disabled"]);
+  };
   const zone = (title, suffix) =>
     section(title, "mdi:chart-bell-curve", [
       heading(t.heating, "mdi:radiator"),
       tile(dev, `curve_select_heating_zone_${suffix}`),
-      dev.get(`heating_curve_zone_${suffix}`) && {
-        type: "picture-entity",
-        entity: dev.get(`heating_curve_zone_${suffix}`),
-        show_name: false,
-        show_state: false,
-        ...FULL_CARD,
-      },
       tile(dev, `sensors_curve_flow_temp_zone_${suffix}`),
+      diagram("heating", suffix),
       heading(t.cooling, "mdi:snowflake"),
       tile(dev, `curve_select_cooling_zone_${suffix}`),
-      dev.get(`cooling_curve_zone_${suffix}`) && {
-        type: "picture-entity",
-        entity: dev.get(`cooling_curve_zone_${suffix}`),
-        show_name: false,
-        show_state: false,
-        ...FULL_CARD,
-      },
+      diagram("cooling", suffix),
     ], FULL);
   return {
     title: t.curves,
@@ -318,7 +339,7 @@ function unitsView(t, hass, moduleIds) {
     return section(title, "mdi:heat-pump-outline", [
       tile(dev, "module_current_power"),
       tile(dev, "module_inverter_actual_speed"),
-      tile(dev, "module_compressor_cop"),
+      whenAvailable(tile(dev, "module_compressor_cop")),
       tile(dev, "module_defrosting"),
       tile(dev, "module_problem"),
       tile(dev, "module_active_faults"),
