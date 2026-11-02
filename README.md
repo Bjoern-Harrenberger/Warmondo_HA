@@ -147,18 +147,21 @@ Baureihe, die Zahl der Wärmepumpen und die tatsächlich verbauten Fühler.
 1. *Einstellungen → Dashboards → Dashboard hinzufügen*.
 2. **Warmondo** auswählen, einen Namen vergeben, *Erstellen*.
 
-Es enthält vier Seiten:
+Es enthält sechs Seiten:
 
-- **Übersicht** – Zustand, Störungen, Temperaturen, Leistung und
-  Leistungszahl, Arbeitszahlen, Bedienung von Betriebsart, Sollwerten,
-  Zonen und Warmwasser. Einstellungen, die gerade nicht wirken, sind
-  ausgeblendet: der feste Vorlauf-Sollwert etwa, solange die Zone einer
-  Heizkurve folgt, und die Kühlwerte im reinen Heizbetrieb.
-- **Verlauf** – Bilanz über 24 Stunden bis 365 Tage, Temperaturen,
-  Leistung und Leistungszahl der letzten 24 Stunden.
-- **Heizkurven** – gewählte Heiz- und Kühlkurve je Zone mit Diagramm.
-- **Wärmepumpen** – je Gerät der Kaskade Leistung, Verdichter, Vor- und
-  Rücklauf, Drücke, Abtauung und Störungen.
+- **Überblick** – Anlage, Status und Störungen, Umgebung, Leistung und
+  Leistungszahl je Betriebsart, Betriebsstunden und Starts, Temperaturen,
+  beide Heizzonen und Warmwasser mit allen Einstellungen. Einstellungen, die
+  gerade nicht wirken, sind gesperrt dargestellt: der feste
+  Vorlauf-Sollwert etwa, solange die Zone einer Heizkurve folgt.
+- **Kennlinien** – gewählte Heiz- und Kühlkurve je Zone als Diagramm, was
+  die Kurve gerade fordert, und die frei einstellbare Kurve 9.
+- **Zusatzheizung** – Heizstäbe, Zwangsbetrieb, Laufzeiten und Starts.
+- **Hydraulik** – Pumpen, Ventile, externe Signale und SG-Ready.
+- **Module** – jedes Gerät der Kaskade mit Verdichter, Leistung, Drücken,
+  Temperaturen und Abtauung.
+- **Verlauf** – Bilanz über 24 Stunden bis 365 Tage, Temperaturen, Leistung
+  und Leistungszahl der letzten 24 Stunden.
 
 Wer das Dashboard anpassen möchte: oben rechts über die drei Punkte
 *Dashboard bearbeiten → Kontrolle übernehmen*. Danach lässt es sich frei verändern, folgt aber
