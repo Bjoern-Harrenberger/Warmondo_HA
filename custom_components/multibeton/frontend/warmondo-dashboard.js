@@ -537,8 +537,14 @@ function overview(dev, model) {
       ]),
       section("Leistung jetzt", "mdi:gauge", [
         info("cop_now", { cop: g("cop_current"), out: g("active_capacity"), in: g("active_power_input") }),
-        tile(g("active_capacity"), "Leistung", "red"),
-        tile(g("active_power_input"), "Leistungsaufnahme", "orange"),
+        // Unavailable while the compressor stands; the line above says so
+        // already, and a tile would add a warning badge that reads as a fault.
+        unless(tile(g("active_capacity"), "Leistung", "red"), g("active_capacity"), ["unavailable", "unknown"]),
+        unless(
+          tile(g("active_power_input"), "Leistungsaufnahme", "orange"),
+          g("active_power_input"),
+          ["unavailable", "unknown"]
+        ),
         info("cop_mode", {
           label: "Heizen", icon: "mdi:radiator", color: "red",
           cop: g("cop_heating"), out: g("power_heating_capacity"), in: g("power_heating_power_input"),
@@ -821,7 +827,10 @@ function moduleView(modules) {
         const fitted = (k) => m.dev.fitted(k);
         return section(m.label, "mdi:heat-pump-outline", [
           tile(g("module_inverter_actual_speed"), "Verdichter", "blue"),
-          tile(g("module_current_power"), "Wärmeleistung", "red"),
+          unless(tile(g("module_current_power"), "Wärmeleistung", "red"), g("module_current_power"), [
+            "unavailable",
+            "unknown",
+          ]),
           info("module_cop", { cop: g("module_compressor_cop") }),
           tile(g("module_defrosting"), "Abtauung", "light-blue"),
           tile(g("module_problem"), "Störung", "red"),
@@ -909,6 +918,43 @@ function findPlants(hass) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
+/**
+ * With several plants, six tabs each would crowd the tab bar with look-alike
+ * icons. Each plant gets one tab instead, named after it; its other pages
+ * become subviews, reached from a row of buttons on top of its overview.
+ */
+function asOneTab(plant, plantViews) {
+  const dashboard = window.location.pathname.split("/")[1] || "lovelace";
+  const suffix = plant.id.slice(0, 6);
+  for (const view of plantViews) view.path = `${view.path}-${suffix}`;
+  const [main, ...rest] = plantViews;
+  const mainPath = `/${dashboard}/${main.path}`;
+
+  main.title = plant.name;
+  delete main.icon; // a text tab: the plant's name is what tells them apart
+  main.sections.unshift({
+    type: "grid",
+    column_span: 3,
+    cards: rest.map((view) => ({
+      type: "button",
+      name: view.title,
+      icon: view.icon,
+      show_state: false,
+      tap_action: { action: "navigate", navigation_path: `/${dashboard}/${view.path}` },
+      // A spanning section has twelve grid columns per view column, so four
+      // keeps each button wide enough for "Zusatzheizung" on any screen.
+      grid_options: { columns: 4, rows: 2 },
+    })),
+  });
+
+  for (const view of rest) {
+    view.title = `${plant.name} – ${view.title}`;
+    view.subview = true;
+    view.back_path = mainPath;
+  }
+  return plantViews;
+}
+
 class WarmondoDashboardStrategy extends HTMLElement {
   static async generate(config, hass) {
     let plants = findPlants(hass);
@@ -943,12 +989,10 @@ class WarmondoDashboardStrategy extends HTMLElement {
         history(dev),
       ];
       if (plants.length > 1) {
-        for (const view of plantViews) {
-          view.title = `${plant.name} – ${view.title}`;
-          view.path = `${view.path}-${plant.id.slice(0, 6)}`;
-        }
+        views.push(...asOneTab(plant, plantViews));
+      } else {
+        views.push(...plantViews);
       }
-      views.push(...plantViews);
     }
     return { views };
   }
