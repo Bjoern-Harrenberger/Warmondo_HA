@@ -1,0 +1,45 @@
+# The contents of this file is based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
+
+target-version = "py314"
+
+# docs/ holds documentation and the small script that draws the curve
+# diagrams from it. It is run by hand and never ships with the integration.
+# Excluded here rather than through per-file-ignores, because those cover
+# the linter only and not the formatter.
+exclude = ["docs"]
+
+[lint]
+select = [
+    "ALL",
+]
+
+ignore = [
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "D203", # no-blank-line-before-class (incompatible with formatter)
+    "D213", # multi-line-summary-second-line - this project (like
+            # home-assistant/core) writes the summary on the first line, which
+            # is what D212 asks for; D212 and D213 are mutually exclusive, so
+            # exactly one of them has to be ignored.
+    "COM812", # incompatible with formatter
+    "ISC001", # incompatible with formatter
+]
+
+[lint.per-file-ignores]
+# The multibeton_modbus subpackage is written to stand on its own: its modules
+# address each other with relative imports so the package can be moved or
+# published without rewriting every import. That is a deliberate design choice,
+# not an oversight, so parent-relative imports are allowed here - and only here.
+"custom_components/multibeton/multibeton_modbus/**" = ["TID252"]
+# Tests assert, compare against literal register values and fake only the
+# parts of a Modbus unit the code under test calls.
+"tests/**" = ["S101", "PLR2004", "ARG002"]
+
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[lint.pyupgrade]
+keep-runtime-typing = true
+
+[lint.mccabe]
+max-complexity = 25

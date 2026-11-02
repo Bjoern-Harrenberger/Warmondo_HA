@@ -1,0 +1,1121 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Warmondo Wärmepumpe",
+                "description": "Bindet eine Warmondo-Wärmepumpe der MULTIBETON GmbH ein. Home Assistant spricht dabei mit dem Modbus-TCP-Gateway an der Regelung, nicht direkt mit der Wärmepumpe.\n\nIn den meisten Fällen genügt die IP-Adresse des Gateways. Anleitung: [Hilfe zur Einrichtung]({docs_url}). Fragen beantwortet der MULTIBETON-Service: {support_phone}, {support_email}.",
+                "data": {
+                    "name": "Name",
+                    "model": "Baureihe",
+                    "host": "IP-Adresse des Gateways"
+                },
+                "data_description": {
+                    "name": "Optional. Wird zum Gerätenamen, zum Beispiel „Warmondo Wärmepumpe“. Nur nötig, wenn mehr als eine Wärmepumpe eingebunden wird.",
+                    "model": "Baureihe laut Typenschild (WM-S bis WM-XL). Die Regelung meldet sie nicht, deshalb hier auswählen.",
+                    "host": "Die feste IP-Adresse des Modbus-TCP-Gateways, zum Beispiel 192.168.1.50. Sie steht in der Weboberfläche des Gateways oder in der Geräteliste des Routers."
+                },
+                "sections": {
+                    "advanced": {
+                        "name": "Erweitert",
+                        "description": "Nur ändern, wenn das Gateway anders eingestellt ist als üblich.",
+                        "data": {
+                            "port": "Port",
+                            "unit_id": "Modbus-Adresse der Regelung",
+                            "framer": "Übertragungsformat",
+                            "read_only": "Nur lesen"
+                        },
+                        "data_description": {
+                            "port": "TCP-Port des Gateways. Üblich ist 502.",
+                            "unit_id": "Modbus-Adresse der Regelung hinter dem Gateway. Üblich ist 1.",
+                            "framer": "„socket“, wenn das Gateway Modbus TCP spricht (üblich), „rtu“, wenn es die Rahmen der Regelung nur durchreicht. Kommt keine Verbindung zustande, zuerst das andere Format probieren.",
+                            "read_only": "Legt keine Schalter, Sollwerte, Auswahlfelder und Taster an. Die Anlage lässt sich dann aus Home Assistant heraus nicht verstellen – für Vorführanlagen oder reine Überwachung."
+                        }
+                    }
+                }
+            },
+            "reconfigure": {
+                "title": "Warmondo Wärmepumpe neu konfigurieren",
+                "description": "Einstellungen dieser Wärmepumpe ändern. Geräte, Entitäten und deren IDs bleiben erhalten – Automatisierungen und Dashboards laufen unverändert weiter.\n\nAnleitung: [Hilfe zur Einrichtung]({docs_url}).",
+                "data": {
+                    "name": "Name",
+                    "model": "Baureihe",
+                    "host": "IP-Adresse des Gateways"
+                },
+                "data_description": {
+                    "name": "Optional. Wird zum Gerätenamen. Nur nötig, wenn mehr als eine Wärmepumpe eingebunden ist.",
+                    "model": "Baureihe laut Typenschild (WM-S bis WM-XL).",
+                    "host": "Die feste IP-Adresse des Modbus-TCP-Gateways."
+                },
+                "sections": {
+                    "advanced": {
+                        "name": "Erweitert",
+                        "description": "Nur ändern, wenn das Gateway anders eingestellt ist als üblich.",
+                        "data": {
+                            "port": "Port",
+                            "unit_id": "Modbus-Adresse der Regelung",
+                            "framer": "Übertragungsformat",
+                            "read_only": "Nur lesen"
+                        },
+                        "data_description": {
+                            "port": "TCP-Port des Gateways. Üblich ist 502.",
+                            "unit_id": "Modbus-Adresse der Regelung hinter dem Gateway. Üblich ist 1.",
+                            "framer": "„socket“, wenn das Gateway Modbus TCP spricht (üblich), „rtu“, wenn es die Rahmen der Regelung nur durchreicht.",
+                            "read_only": "Legt keine Schalter, Sollwerte, Auswahlfelder und Taster an. Die Anlage lässt sich dann aus Home Assistant heraus nicht verstellen."
+                        }
+                    }
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Keine Verbindung zur Regelung. Bitte prüfen: Ist das Gateway eingeschaltet und unter dieser IP-Adresse erreichbar? Falls ja, unter „Erweitert“ das andere Übertragungsformat probieren.",
+            "unknown": "Unerwarteter Fehler. Bitte das Protokoll prüfen oder den MULTIBETON-Service kontaktieren."
+        },
+        "abort": {
+            "already_configured": "Diese Wärmepumpe ist bereits eingerichtet.",
+            "reconfigure_successful": "Die Einstellungen wurden gespeichert."
+        }
+    },
+    "entity": {
+        "image": {
+            "cooling_curve_zone_a": {
+                "name": "Kühlkurve Zone A"
+            },
+            "cooling_curve_zone_b": {
+                "name": "Kühlkurve Zone B"
+            },
+            "heating_curve_zone_a": {
+                "name": "Heizkurve Zone A"
+            },
+            "heating_curve_zone_b": {
+                "name": "Heizkurve Zone B"
+            }
+        },
+        "binary_sensor": {
+            "aux_heating_active": {
+                "name": "Zusatzheizung in Betrieb"
+            },
+            "cell_pump": {
+                "name": "Zellen-Umwälzpumpe"
+            },
+            "cooling_switch": {
+                "name": "Schalter Kühlen"
+            },
+            "defrost_indication": {
+                "name": "Abtauanzeige"
+            },
+            "defrosting": {
+                "name": "Abtauung"
+            },
+            "dhw_on": {
+                "name": "Warmwasser"
+            },
+            "dhw_switch": {
+                "name": "Schalter Warmwasser"
+            },
+            "disinfection_enabled": {
+                "name": "Geplante Desinfektion (Parameter)"
+            },
+            "external_heat_source": {
+                "name": "Externe Wärmequelle"
+            },
+            "external_pump": {
+                "name": "Externe Umwälzpumpe"
+            },
+            "fault_indication": {
+                "name": "Störungsanzeige"
+            },
+            "floor_heating_present": {
+                "name": "Fußbodenheizung vorhanden"
+            },
+            "forced_aux_heater": {
+                "name": "Zwangsbetrieb Zusatzheizstab"
+            },
+            "forced_dhw": {
+                "name": "Warmwasser erzwingen"
+            },
+            "forced_external_source": {
+                "name": "Zwangsbetrieb externe Wärmequelle"
+            },
+            "forced_tank_heater": {
+                "name": "Zwangsbetrieb Speicher-Heizstab"
+            },
+            "frost_protection": {
+                "name": "Frostschutz"
+            },
+            "heating_switch": {
+                "name": "Schalter Heizen"
+            },
+            "mixing_pump": {
+                "name": "Mischpumpe"
+            },
+            "mixing_valve": {
+                "name": "Mischventil"
+            },
+            "module_aux_heater_1": {
+                "name": "Zusatzheizstab 1"
+            },
+            "module_aux_heater_2": {
+                "name": "Zusatzheizstab 2"
+            },
+            "module_aux_heater_feedback": {
+                "name": "Rückmeldung Zusatzheizstab"
+            },
+            "module_base_pan_heater": {
+                "name": "Bodenwannenheizung"
+            },
+            "module_circulation_pump": {
+                "name": "Umwälzpumpe"
+            },
+            "module_compressor_relay": {
+                "name": "Verdichter (Relais)"
+            },
+            "module_crankcase_heater_1": {
+                "name": "Kurbelwannenheizung 1"
+            },
+            "module_crankcase_heater_2": {
+                "name": "Kurbelwannenheizung 2"
+            },
+            "module_defrosting": {
+                "name": "Abtauung"
+            },
+            "module_enabled": {
+                "name": "Freigegeben"
+            },
+            "module_evi_valve": {
+                "name": "Einspritzventil (EVI)"
+            },
+            "module_flow_switch": {
+                "name": "Strömungswächter"
+            },
+            "module_frost_protection_tape": {
+                "name": "Frostschutz-Heizband"
+            },
+            "module_high_pressure_switch": {
+                "name": "Hochdruckschalter"
+            },
+            "module_low_pressure_switch": {
+                "name": "Niederdruckschalter"
+            },
+            "module_problem": {
+                "name": "Störung"
+            },
+            "module_reversing_valve": {
+                "name": "4-Wege-Ventil"
+            },
+            "problem": {
+                "name": "Störung"
+            },
+            "remote_switch": {
+                "name": "Fernbedienungsschalter"
+            },
+            "return_pump": {
+                "name": "Zirkulationspumpe Rücklauf"
+            },
+            "scheduled_disinfection": {
+                "name": "Geplante Desinfektion"
+            },
+            "smart_grid_evu": {
+                "name": "EVU-Signal"
+            },
+            "smart_grid_sg": {
+                "name": "SG-Signal"
+            },
+            "solar_pump": {
+                "name": "Solarpumpe"
+            },
+            "solar_signal": {
+                "name": "Solarsignal"
+            },
+            "system_on": {
+                "name": "Hauptschalter"
+            },
+            "tank_heater": {
+                "name": "Speicher-Heizstab"
+            },
+            "tank_heater_feedback": {
+                "name": "Rückmeldung Speicher-Heizstab"
+            },
+            "thermostat_c": {
+                "name": "Thermostatsignal C (Kühlen)"
+            },
+            "thermostat_h": {
+                "name": "Thermostatsignal H (Heizen)"
+            },
+            "three_way_valve_1": {
+                "name": "3-Wege-Ventil 1"
+            },
+            "three_way_valve_2": {
+                "name": "3-Wege-Ventil 2"
+            },
+            "three_way_valve_3": {
+                "name": "3-Wege-Ventil 3"
+            },
+            "vacation_away": {
+                "name": "Urlaub abwesend"
+            },
+            "vacation_home": {
+                "name": "Urlaub zu Hause"
+            },
+            "zone_a_on": {
+                "name": "Zone A"
+            },
+            "zone_b_on": {
+                "name": "Zone B"
+            }
+        },
+        "button": {
+            "module_defrost_command": {
+                "name": "Abtauung starten"
+            },
+            "reset_fault": {
+                "name": "Störung quittieren"
+            }
+        },
+        "number": {
+            "cooling_room_setpoint_zone_a": {
+                "name": "Kühlen Raum-Soll"
+            },
+            "cooling_room_setpoint_zone_b": {
+                "name": "Kühlen Raum-Soll Zone B"
+            },
+            "cooling_setpoint_zone_a": {
+                "name": "Kühlen Vorlauf-Soll"
+            },
+            "cooling_setpoint_zone_b": {
+                "name": "Kühlen Vorlauf-Soll Zone B"
+            },
+            "curve9_cooling_ambient_1": {
+                "name": "Kurve 9 (frei) Kühlen Außentemp. 1"
+            },
+            "curve9_cooling_ambient_2": {
+                "name": "Kurve 9 (frei) Kühlen Außentemp. 2"
+            },
+            "curve9_cooling_outlet_1": {
+                "name": "Kurve 9 (frei) Kühlen Vorlauftemp. 1"
+            },
+            "curve9_cooling_outlet_2": {
+                "name": "Kurve 9 (frei) Kühlen Vorlauftemp. 2"
+            },
+            "curve9_heating_ambient_1": {
+                "name": "Kurve 9 (frei) Heizen Außentemp. 1"
+            },
+            "curve9_heating_ambient_2": {
+                "name": "Kurve 9 (frei) Heizen Außentemp. 2"
+            },
+            "curve9_heating_outlet_1": {
+                "name": "Kurve 9 (frei) Heizen Vorlauftemp. 1"
+            },
+            "curve9_heating_outlet_2": {
+                "name": "Kurve 9 (frei) Heizen Vorlauftemp. 2"
+            },
+            "dhw_setpoint": {
+                "name": "Warmwasser-Soll"
+            },
+            "disinfection_hold_time_min": {
+                "name": "Desinfektion Haltezeit"
+            },
+            "disinfection_max_interval_min": {
+                "name": "Desinfektion max. Intervall"
+            },
+            "disinfection_setpoint": {
+                "name": "Desinfektionstemperatur"
+            },
+            "heating_room_setpoint_zone_a": {
+                "name": "Heizen Raum-Soll"
+            },
+            "heating_room_setpoint_zone_b": {
+                "name": "Heizen Raum-Soll Zone B"
+            },
+            "heating_setpoint_zone_a": {
+                "name": "Heizen Vorlauf-Soll"
+            },
+            "heating_setpoint_zone_b": {
+                "name": "Heizen Vorlauf-Soll Zone B"
+            }
+        },
+        "select": {
+            "control_mode": {
+                "name": "Betriebsart",
+                "state": {
+                    "cool": "Kühlen",
+                    "heat": "Heizen",
+                    "auto": "Automatik"
+                }
+            },
+            "curve_select_cooling_zone_a": {
+                "name": "Kühlkurve (Zone A)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_cooling_zone_b": {
+                "name": "Kühlkurve (Zone B)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_heating_zone_a": {
+                "name": "Heizkurve (Zone A)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_heating_zone_b": {
+                "name": "Heizkurve (Zone B)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "power_mode": {
+                "name": "Leistungsmodus",
+                "state": {
+                    "standard": "Standard",
+                    "boost": "Boost",
+                    "eco": "Eco",
+                    "auto": "Automatik"
+                }
+            }
+        },
+        "sensor": {
+            "active_capacity": {
+                "name": "Leistung"
+            },
+            "active_faults": {
+                "name": "Aktive Störungen"
+            },
+            "active_power_input": {
+                "name": "Leistungsaufnahme"
+            },
+            "control_mode": {
+                "name": "Betriebsart",
+                "state": {
+                    "cool": "Kühlen",
+                    "heat": "Heizen",
+                    "auto": "Automatik"
+                }
+            },
+            "cooling_room_setpoint_zone_a": {
+                "name": "Kühlen Raum-Soll"
+            },
+            "cooling_room_setpoint_zone_b": {
+                "name": "Kühlen Raum-Soll Zone B"
+            },
+            "cooling_setpoint_zone_a": {
+                "name": "Kühlen Vorlauf-Soll"
+            },
+            "cooling_setpoint_zone_b": {
+                "name": "Kühlen Vorlauf-Soll Zone B"
+            },
+            "cop_cooling": {
+                "name": "Leistungszahl Kühlen"
+            },
+            "cop_current": {
+                "name": "Leistungszahl"
+            },
+            "cop_dhw": {
+                "name": "Leistungszahl Warmwasser"
+            },
+            "cop_heating": {
+                "name": "Leistungszahl Heizen"
+            },
+            "curve9_cooling_ambient_1": {
+                "name": "Kurve 9 (frei) Kühlen Außentemp. 1"
+            },
+            "curve9_cooling_ambient_2": {
+                "name": "Kurve 9 (frei) Kühlen Außentemp. 2"
+            },
+            "curve9_cooling_outlet_1": {
+                "name": "Kurve 9 (frei) Kühlen Vorlauftemp. 1"
+            },
+            "curve9_cooling_outlet_2": {
+                "name": "Kurve 9 (frei) Kühlen Vorlauftemp. 2"
+            },
+            "curve9_heating_ambient_1": {
+                "name": "Kurve 9 (frei) Heizen Außentemp. 1"
+            },
+            "curve9_heating_ambient_2": {
+                "name": "Kurve 9 (frei) Heizen Außentemp. 2"
+            },
+            "curve9_heating_outlet_1": {
+                "name": "Kurve 9 (frei) Heizen Vorlauftemp. 1"
+            },
+            "curve9_heating_outlet_2": {
+                "name": "Kurve 9 (frei) Heizen Vorlauftemp. 2"
+            },
+            "curve_select_cooling_zone_a": {
+                "name": "Kühlkurve (Zone A)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_cooling_zone_b": {
+                "name": "Kühlkurve (Zone B)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_heating_zone_a": {
+                "name": "Heizkurve (Zone A)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "curve_select_heating_zone_b": {
+                "name": "Heizkurve (Zone B)",
+                "state": {
+                    "disabled": "Deaktiviert",
+                    "low_temp_1": "Niedertemperaturkurve 1",
+                    "low_temp_2": "Niedertemperaturkurve 2",
+                    "low_temp_3": "Niedertemperaturkurve 3",
+                    "low_temp_4": "Niedertemperaturkurve 4",
+                    "low_temp_5": "Niedertemperaturkurve 5",
+                    "low_temp_6": "Niedertemperaturkurve 6",
+                    "low_temp_7": "Niedertemperaturkurve 7",
+                    "low_temp_8": "Niedertemperaturkurve 8",
+                    "high_temp_1": "Hochtemperaturkurve 1",
+                    "high_temp_2": "Hochtemperaturkurve 2",
+                    "high_temp_3": "Hochtemperaturkurve 3",
+                    "high_temp_4": "Hochtemperaturkurve 4",
+                    "high_temp_5": "Hochtemperaturkurve 5",
+                    "high_temp_6": "Hochtemperaturkurve 6",
+                    "high_temp_7": "Hochtemperaturkurve 7",
+                    "high_temp_8": "Hochtemperaturkurve 8",
+                    "curve_9": "Kurve 9 (benutzerdefiniert)",
+                    "curve_10": "Kurve 10 (werkseitig)",
+                    "curve_11": "Kurve 11 (Steigungskennlinie)",
+                    "curve_12": "Kurve 12 (Steigungskennlinie)"
+                }
+            },
+            "dhw_setpoint": {
+                "name": "Warmwasser-Soll"
+            },
+            "disinfection_hold_time_min": {
+                "name": "Desinfektion Haltezeit"
+            },
+            "disinfection_max_interval_min": {
+                "name": "Desinfektion max. Intervall"
+            },
+            "disinfection_setpoint": {
+                "name": "Desinfektionstemperatur"
+            },
+            "electric_energy": {
+                "name": "Strommenge"
+            },
+            "electric_energy_24h": {
+                "name": "Strommenge 24 Stunden"
+            },
+            "electric_energy_30d": {
+                "name": "Strommenge 30 Tage"
+            },
+            "electric_energy_365d": {
+                "name": "Strommenge 365 Tage"
+            },
+            "electric_energy_7d": {
+                "name": "Strommenge 7 Tage"
+            },
+            "heat_energy": {
+                "name": "Wärmemenge"
+            },
+            "heat_energy_24h": {
+                "name": "Wärmemenge 24 Stunden"
+            },
+            "heat_energy_30d": {
+                "name": "Wärmemenge 30 Tage"
+            },
+            "heat_energy_365d": {
+                "name": "Wärmemenge 365 Tage"
+            },
+            "heat_energy_7d": {
+                "name": "Wärmemenge 7 Tage"
+            },
+            "heat_meter_flow_cumulative_raw": {
+                "name": "Wärmemengenzähler Durchfluss kumuliert (Rohwert)"
+            },
+            "heat_meter_flow_instant_raw": {
+                "name": "Wärmemengenzähler Momentandurchfluss (Rohwert)"
+            },
+            "heat_meter_flow_temp_raw": {
+                "name": "Wärmemengenzähler Vorlauftemperatur (Rohwert)"
+            },
+            "heat_meter_heat_cumulative_raw": {
+                "name": "Wärmemengenzähler Wärmemenge kumuliert (Rohwert)"
+            },
+            "heat_meter_power_instant_raw": {
+                "name": "Wärmemengenzähler Momentanleistung (Rohwert)"
+            },
+            "heat_meter_return_temp_raw": {
+                "name": "Wärmemengenzähler Rücklauftemperatur (Rohwert)"
+            },
+            "heat_meter_status": {
+                "name": "Wärmemengenzähler Status"
+            },
+            "heating_curve_cooling_max_zone_a": {
+                "name": "Kühlkennlinie Obergrenze Zone A"
+            },
+            "heating_curve_cooling_max_zone_b": {
+                "name": "Kühlkennlinie Obergrenze Zone B"
+            },
+            "heating_curve_cooling_min_zone_a": {
+                "name": "Kühlkennlinie Untergrenze Zone A"
+            },
+            "heating_curve_cooling_min_zone_b": {
+                "name": "Kühlkennlinie Untergrenze Zone B"
+            },
+            "heating_curve_heating_max_zone_a": {
+                "name": "Heizkennlinie Obergrenze Zone A"
+            },
+            "heating_curve_heating_max_zone_b": {
+                "name": "Heizkennlinie Obergrenze Zone B"
+            },
+            "heating_curve_heating_min_zone_a": {
+                "name": "Heizkennlinie Untergrenze Zone A"
+            },
+            "heating_curve_heating_min_zone_b": {
+                "name": "Heizkennlinie Untergrenze Zone B"
+            },
+            "heating_curve_slope_cooling_max_zone_a": {
+                "name": "Steigungskennlinie Kühlen Obergrenze Zone A"
+            },
+            "heating_curve_slope_cooling_max_zone_b": {
+                "name": "Steigungskennlinie Kühlen Obergrenze Zone B"
+            },
+            "heating_curve_slope_cooling_min_zone_a": {
+                "name": "Steigungskennlinie Kühlen Untergrenze Zone A"
+            },
+            "heating_curve_slope_cooling_min_zone_b": {
+                "name": "Steigungskennlinie Kühlen Untergrenze Zone B"
+            },
+            "heating_curve_slope_heating_max_zone_a": {
+                "name": "Steigungskennlinie Heizen Obergrenze Zone A"
+            },
+            "heating_curve_slope_heating_max_zone_b": {
+                "name": "Steigungskennlinie Heizen Obergrenze Zone B"
+            },
+            "heating_curve_slope_heating_min_zone_a": {
+                "name": "Steigungskennlinie Heizen Untergrenze Zone A"
+            },
+            "heating_curve_slope_heating_min_zone_b": {
+                "name": "Steigungskennlinie Heizen Untergrenze Zone B"
+            },
+            "heating_room_setpoint_zone_a": {
+                "name": "Heizen Raum-Soll"
+            },
+            "heating_room_setpoint_zone_b": {
+                "name": "Heizen Raum-Soll Zone B"
+            },
+            "heating_setpoint_zone_a": {
+                "name": "Heizen Vorlauf-Soll"
+            },
+            "heating_setpoint_zone_b": {
+                "name": "Heizen Vorlauf-Soll Zone B"
+            },
+            "highest_high_pressure": {
+                "name": "Höchster Hochdruck"
+            },
+            "lowest_low_pressure": {
+                "name": "Niedrigster Niederdruck"
+            },
+            "module_active_faults": {
+                "name": "Aktive Störungen"
+            },
+            "module_actual_superheat": {
+                "name": "Überhitzung Ist"
+            },
+            "module_after_valve_temp": {
+                "name": "Temperatur nach Ventil"
+            },
+            "module_ambient_temp": {
+                "name": "Außentemperatur Modul"
+            },
+            "module_aux_expansion_valve_opening": {
+                "name": "Öffnung Zusatz-Expansionsventil"
+            },
+            "module_compressor_cop": {
+                "name": "Verdichter-Leistungszahl"
+            },
+            "module_compressor_runtime": {
+                "name": "Verdichterlaufzeit (Rohwert)"
+            },
+            "module_condensation_saturation_temp": {
+                "name": "Kondensations-Sättigungstemperatur"
+            },
+            "module_current_power": {
+                "name": "Wärmeleistung"
+            },
+            "module_discharge_gas_temp": {
+                "name": "Heißgastemperatur"
+            },
+            "module_evaporation_saturation_temp": {
+                "name": "Verdampfungs-Sättigungstemperatur"
+            },
+            "module_fan_1_speed": {
+                "name": "Ventilatordrehzahl"
+            },
+            "module_fin_temp": {
+                "name": "Lamellentemperatur"
+            },
+            "module_high_pressure": {
+                "name": "Hochdruck"
+            },
+            "module_inverter_actual_speed": {
+                "name": "Verdichterdrehzahl Ist"
+            },
+            "module_inverter_fault_code": {
+                "name": "Störungscode Frequenzumrichter"
+            },
+            "module_inverter_input_current": {
+                "name": "Eingangsstrom Frequenzumrichter"
+            },
+            "module_inverter_module_temp": {
+                "name": "Modultemperatur Frequenzumrichter"
+            },
+            "module_inverter_output_current": {
+                "name": "Ausgangsstrom Frequenzumrichter"
+            },
+            "module_inverter_output_power": {
+                "name": "Ausgangsleistung Frequenzumrichter"
+            },
+            "module_inverter_output_voltage": {
+                "name": "Ausgangsspannung Frequenzumrichter"
+            },
+            "module_inverter_target_speed": {
+                "name": "Verdichterdrehzahl Soll"
+            },
+            "module_low_pressure": {
+                "name": "Niederdruck"
+            },
+            "module_main_expansion_valve_opening": {
+                "name": "Öffnung Haupt-Expansionsventil"
+            },
+            "module_phe_flow_temp": {
+                "name": "Vorlauftemperatur"
+            },
+            "module_phe_return_temp": {
+                "name": "Rücklauftemperatur"
+            },
+            "module_pump_flow": {
+                "name": "Volumenstrom"
+            },
+            "module_suction_gas_temp": {
+                "name": "Sauggastemperatur"
+            },
+            "module_target_superheat": {
+                "name": "Überhitzung Soll"
+            },
+            "module_total_flow_temp": {
+                "name": "Gesamt-Vorlauftemperatur"
+            },
+            "module_water_pressure": {
+                "name": "Wasserdruck"
+            },
+            "power_aux_heater_power": {
+                "name": "Leistung Zusatzheizstab"
+            },
+            "power_aux_heater_power_configured": {
+                "name": "Konfigurierte Leistung Zusatzheizstab"
+            },
+            "power_cooling_capacity": {
+                "name": "Kälteleistung"
+            },
+            "power_cooling_power_input": {
+                "name": "Leistungsaufnahme Kühlen"
+            },
+            "power_dhw_capacity": {
+                "name": "Heizleistung Warmwasser"
+            },
+            "power_dhw_power_input": {
+                "name": "Leistungsaufnahme Warmwasser"
+            },
+            "power_heating_capacity": {
+                "name": "Heizleistung"
+            },
+            "power_heating_power_input": {
+                "name": "Leistungsaufnahme Heizen"
+            },
+            "power_mode": {
+                "name": "Leistungsmodus",
+                "state": {
+                    "standard": "Standard",
+                    "boost": "Boost",
+                    "eco": "Eco",
+                    "auto": "Automatik"
+                }
+            },
+            "power_power_consumption": {
+                "name": "Leistungsaufnahme (Anlagenregister)"
+            },
+            "running_compressors": {
+                "name": "Verdichter in Betrieb"
+            },
+            "sensors_ambient_temp": {
+                "name": "Außentemperatur"
+            },
+            "sensors_buffer_bottom_temp": {
+                "name": "Pufferspeicher unten"
+            },
+            "sensors_buffer_top_temp": {
+                "name": "Pufferspeicher oben"
+            },
+            "sensors_climate_flow_temp": {
+                "name": "Vorlauftemperatur Klimabetrieb"
+            },
+            "sensors_curve_flow_temp_zone_a": {
+                "name": "Kennlinien-Vorlauftemperatur Zone A"
+            },
+            "sensors_curve_flow_temp_zone_a_corrected": {
+                "name": "Kennlinien-Vorlauftemperatur Zone A korrigiert"
+            },
+            "sensors_curve_flow_temp_zone_b": {
+                "name": "Kennlinien-Vorlauftemperatur Zone B"
+            },
+            "sensors_curve_flow_temp_zone_b_corrected": {
+                "name": "Kennlinien-Vorlauftemperatur Zone B korrigiert"
+            },
+            "sensors_dhw_tank_temp": {
+                "name": "Warmwasserspeicher-Temperatur"
+            },
+            "sensors_floor_heating_flow_temp": {
+                "name": "Vorlauftemperatur Fußbodenheizung"
+            },
+            "sensors_mean_ambient_temp": {
+                "name": "Mittlere Außentemperatur"
+            },
+            "sensors_return_temp_zone_a": {
+                "name": "Rücklauftemperatur Zone A"
+            },
+            "sensors_room_temp": {
+                "name": "Raumtemperatur"
+            },
+            "sensors_solar_temp": {
+                "name": "Solartemperatur"
+            },
+            "sensors_system_flow_temp": {
+                "name": "Vorlauftemperatur System"
+            },
+            "system_io_mixing_valve_opening": {
+                "name": "Mischventil Öffnung"
+            },
+            "system_io_mixing_valve_target_opening": {
+                "name": "Mischventil Sollöffnung"
+            },
+            "system_io_valve_1_status": {
+                "name": "Status 3-Wege-Ventil 1"
+            },
+            "system_io_valve_2_status": {
+                "name": "Status 3-Wege-Ventil 2"
+            },
+            "system_io_valve_3_status": {
+                "name": "Status 3-Wege-Ventil 3"
+            },
+            "system_status_aux_heater_runtime_min": {
+                "name": "Laufzeit Zusatzheizstab"
+            },
+            "system_status_aux_heater_starts": {
+                "name": "Starts Zusatzheizstab"
+            },
+            "system_status_compressor_idle_continuous_min": {
+                "name": "Verdichterstillstand ununterbrochen"
+            },
+            "system_status_compressor_runtime_continuous_min": {
+                "name": "Verdichterlaufzeit ununterbrochen"
+            },
+            "system_status_compressor_runtime_cooling_min": {
+                "name": "Verdichterlaufzeit Kühlbetrieb"
+            },
+            "system_status_compressor_runtime_dhw_min": {
+                "name": "Verdichterlaufzeit Warmwasser"
+            },
+            "system_status_compressor_runtime_heating_min": {
+                "name": "Verdichterlaufzeit Heizbetrieb"
+            },
+            "system_status_compressor_runtime_total_min": {
+                "name": "Verdichterlaufzeit gesamt"
+            },
+            "system_status_compressor_starts": {
+                "name": "Verdichterstarts"
+            },
+            "system_status_configured_mode": {
+                "name": "Eingestellter Modus",
+                "state": {
+                    "cool": "Kühlen",
+                    "heat": "Heizen",
+                    "auto": "Automatik"
+                }
+            },
+            "system_status_cooling_starts": {
+                "name": "Starts Kühlbetrieb"
+            },
+            "system_status_current_mode": {
+                "name": "Aktueller Betriebsmodus",
+                "state": {
+                    "none": "Keiner",
+                    "cooling": "Kühlen",
+                    "heating": "Heizen",
+                    "dhw": "Warmwasser"
+                }
+            },
+            "system_status_curve_ambient_temp": {
+                "name": "Kennlinien-Außentemperatur"
+            },
+            "system_status_defrost_count": {
+                "name": "Anzahl Abtauvorgänge"
+            },
+            "system_status_dhw_starts": {
+                "name": "Starts Warmwasserbereitung"
+            },
+            "system_status_heating_starts": {
+                "name": "Starts Heizbetrieb"
+            },
+            "system_status_mixing_valve_cycle_time_s": {
+                "name": "Mischventil Zykluszeit"
+            },
+            "system_status_module_count": {
+                "name": "Anzahl Module"
+            },
+            "system_status_operating_state": {
+                "name": "Betriebszustand",
+                "state": {
+                    "standby": "Bereitschaft",
+                    "starting": "Startet",
+                    "running": "In Betrieb",
+                    "shutting_down": "Fährt herunter",
+                    "severe_alarm": "Schwerer Alarm"
+                }
+            },
+            "system_status_power_control_actual_temp": {
+                "name": "Regeltemperatur Leistungsregelung"
+            },
+            "system_status_power_control_target_temp": {
+                "name": "Zieltemperatur Leistungsregelung"
+            },
+            "system_status_pump_flow_max": {
+                "name": "Pumpe Maximaldurchfluss"
+            },
+            "system_status_pump_flow_min": {
+                "name": "Pumpe Minimaldurchfluss"
+            },
+            "system_status_pump_speed_max": {
+                "name": "Pumpe Maximaldrehzahl"
+            },
+            "system_status_pump_speed_min": {
+                "name": "Pumpe Minimaldrehzahl"
+            },
+            "system_status_smart_grid_command": {
+                "name": "Smart-Grid-Befehl"
+            },
+            "system_status_smart_grid_status": {
+                "name": "Smart-Grid-Status"
+            },
+            "system_status_tank_heater_runtime_min": {
+                "name": "Laufzeit Speicher-Heizstab"
+            },
+            "system_status_tank_heater_starts": {
+                "name": "Starts Speicher-Heizstab"
+            },
+            "type_parameters_rated_voltage": {
+                "name": "Nennspannung"
+            },
+            "user_parameters_fixed_curve_source": {
+                "name": "Feste Kurvenquelle (Werk)"
+            },
+            "work_figure_24h": {
+                "name": "Arbeitszahl 24 Stunden"
+            },
+            "work_figure_30d": {
+                "name": "Arbeitszahl 30 Tage"
+            },
+            "work_figure_365d": {
+                "name": "Arbeitszahl 365 Tage"
+            },
+            "work_figure_7d": {
+                "name": "Arbeitszahl 7 Tage"
+            }
+        },
+        "switch": {
+            "dhw_on": {
+                "name": "Warmwasser"
+            },
+            "disinfection_enabled": {
+                "name": "Geplante Desinfektion (Parameter)"
+            },
+            "forced_dhw": {
+                "name": "Warmwasser erzwingen"
+            },
+            "module_enabled": {
+                "name": "Freigegeben"
+            },
+            "scheduled_disinfection": {
+                "name": "Geplante Desinfektion"
+            },
+            "system_on": {
+                "name": "Hauptschalter"
+            },
+            "vacation_away": {
+                "name": "Urlaub abwesend"
+            },
+            "vacation_home": {
+                "name": "Urlaub zu Hause"
+            },
+            "zone_a_on": {
+                "name": "Zone A"
+            },
+            "zone_b_on": {
+                "name": "Zone B"
+            }
+        }
+    },
+    "device": {
+        "module_master": {
+            "name": "{title} Master"
+        },
+        "module_slave": {
+            "name": "{title} Slave {module}#"
+        }
+    },
+    "issues": {
+        "model_mismatch": {
+            "title": "Baureihe passt nicht zur Anlage",
+            "description": "Die Anlage „{title}“ meldet eine Nennspannung von {measured} V, eingetragen ist aber die Baureihe {model} — und die ist eine {expected}-V-Ausführung.\n\nDie Baureihe lässt sich über Modbus nicht auslesen; sie wird am Gerät über DIP-Schalter eingestellt und bei der Einrichtung von Hand eingetragen. Vermutlich ist dabei die falsche gewählt worden. Prüfe die Bezeichnung auf dem Typenschild und ändere sie unter Einstellungen → Geräte & Dienste → Warmondo → Neu konfigurieren.\n\nSolange beides sich widerspricht, stimmen die Angaben zur Baureihe im Dashboard und in der Geräteansicht nicht."
+        }
+    }
+}

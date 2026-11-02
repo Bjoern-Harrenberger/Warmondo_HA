@@ -1,0 +1,19 @@
+{
+  "domain": "multibeton",
+  "name": "Warmondo",
+  "after_dependencies": [
+    "recorder"
+  ],
+  "codeowners": [
+    "@Bjoern-Harrenberger"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Bjoern-Harrenberger/Warmondo_HA",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Bjoern-Harrenberger/Warmondo_HA/issues",
+  "requirements": [
+    "modbus-connection[tmodbus]>=4.8.1,<5"
+  ],
+  "version": "1.0.0"
+}

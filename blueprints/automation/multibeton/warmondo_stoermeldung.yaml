@@ -1,0 +1,53 @@
+blueprint:
+  name: Warmondo – Störmeldung aufs Handy
+  description: >
+    Schickt eine Nachricht auf das Handy, sobald die Warmondo-Wärmepumpe
+    eine Störung meldet – mit dem Wortlaut der Regelung und dem Gerät
+    (Anlage, Master oder Slave), an dem sie auftritt. Auf Wunsch auch eine
+    Nachricht, wenn die Störung wieder behoben ist.
+
+
+    Voraussetzung ist die Home-Assistant-App auf dem Handy, angemeldet an
+    dieser Home-Assistant-Installation.
+  domain: automation
+  author: MULTIBETON GmbH
+  source_url: https://github.com/Bjoern-Harrenberger/Warmondo_HA/blob/master/blueprints/automation/multibeton/warmondo_stoermeldung.yaml
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    notify_device:
+      name: Handy
+      description: Das Handy, auf dem die Nachricht ankommen soll.
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    notify_cleared:
+      name: Auch melden, wenn die Störung behoben ist
+      default: true
+      selector:
+        boolean:
+
+mode: queued
+max: 10
+
+triggers:
+  - trigger: event
+    event_type: multibeton_fault
+
+conditions:
+  - condition: template
+    value_template: >
+      {{ not trigger.event.data.cleared or notify_cleared }}
+
+variables:
+  notify_cleared: !input notify_cleared
+
+actions:
+  - domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: >
+      {{ 'Warmondo: Störung behoben' if trigger.event.data.cleared
+         else 'Warmondo: Störung' }}
+    message: "{{ trigger.event.data.message }}"

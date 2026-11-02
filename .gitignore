@@ -1,0 +1,24 @@
+# artifacts
+__pycache__
+.pytest*
+*.egg-info
+*/build/*
+*/dist/*
+
+
+# misc
+.coverage
+.vscode
+coverage.xml
+.ruff_cache
+
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml
+# macOS
+.DS_Store
+
+# Interne Arbeitsnotizen, bleiben lokal
+CLAUDE.md
+.env

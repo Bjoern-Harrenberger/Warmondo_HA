@@ -1,0 +1,16 @@
+name: Wunsch oder Idee
+description: Etwas fehlt in der Integration oder könnte besser sein.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: wunsch
+    attributes:
+      label: Was wünschen Sie sich?
+      description: Beschreiben Sie, was die Integration können sollte und wofür Sie es brauchen.
+    validations:
+      required: true
+  - type: textarea
+    id: bisher
+    attributes:
+      label: Wie lösen Sie es bisher?
+      description: Optional – etwa eine Automatisierung oder ein Umweg über die Regelung.

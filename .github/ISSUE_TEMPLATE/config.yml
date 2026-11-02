@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: MULTIBETON-Service (Fragen zur Wärmepumpe)
+    url: mailto:waermepumpe@multibeton.de
+    about: Telefon +49 2241 252000 – für Einstellungen, Hydraulik und Inbetriebnahme.
+  - name: Anleitung
+    url: https://github.com/Bjoern-Harrenberger/Warmondo_HA#readme
+    about: Installation, Einrichtung und häufige Fragen.

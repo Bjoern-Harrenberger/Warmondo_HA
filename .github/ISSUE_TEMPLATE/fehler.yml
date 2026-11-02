@@ -1,0 +1,57 @@
+name: Fehler melden
+description: Etwas funktioniert in der Integration nicht wie erwartet.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Danke für die Meldung! Fragen zur Wärmepumpe selbst (Einstellungen,
+        Hydraulik, Inbetriebnahme) beantwortet der MULTIBETON-Service unter
+        +49 2241 252000 oder waermepumpe@multibeton.de.
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Was ist passiert?
+      description: Was haben Sie erwartet, und was ist stattdessen passiert?
+    validations:
+      required: true
+  - type: input
+    id: version_integration
+    attributes:
+      label: Version der Integration
+      description: Steht in HACS oder unter Einstellungen → Geräte & Dienste → Warmondo.
+    validations:
+      required: true
+  - type: input
+    id: version_ha
+    attributes:
+      label: Version von Home Assistant
+      description: Einstellungen → Info.
+    validations:
+      required: true
+  - type: dropdown
+    id: baureihe
+    attributes:
+      label: Baureihe
+      options:
+        - WM-S
+        - WM-M
+        - WM-L
+        - WM-XL
+        - Kaskade aus mehreren Geräten
+        - Weiß ich nicht
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: Diagnosedatei
+      description: >
+        Einstellungen → Geräte & Dienste → Warmondo → drei Punkte →
+        Diagnosedaten herunterladen, und die Datei hier hineinziehen. Sie
+        enthält keine Zugangsdaten, die IP-Adresse des Gateways ist
+        unkenntlich gemacht.
+  - type: textarea
+    id: protokoll
+    attributes:
+      label: Auszug aus dem Protokoll
+      description: Einstellungen → System → Protokolle, Einträge zu „multibeton“.
+      render: text

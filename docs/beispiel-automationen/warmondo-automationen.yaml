@@ -1,0 +1,216 @@
+# Beispiel-Automationen für die Warmondo-Wärmepumpe
+# ==================================================
+#
+# Fünf Automationen für den Kunden, der seine Anlage selbst optimieren
+# will. Sie gehören in die `automation:`-Liste der configuration.yaml
+# oder, einzeln, in den Automationseditor.
+#
+# ZWEI DINGE VOR DEM KOPIEREN
+#
+# 1. Die Entity-IDs stimmen so nicht. Sie beginnen mit dem Namen, den
+#    das Gerät in Home Assistant trägt — heißt es "Warmondo WM-XL", dann
+#    ist der Schalter `switch.warmondo_wm_xl_warmwasser`. In den
+#    Entwicklerwerkzeugen unter "Zustände" nachsehen und ersetzen.
+#
+# 2. Jede Automation schreibt in die Regelung, und die legt ihre
+#    Sollwerte im EEPROM ab — ein Bauteil, das man nur endlich oft
+#    beschreiben kann. Deshalb steht in jeder Automation eine Bedingung,
+#    die abbricht, wenn der Zielwert schon anliegt, und bei den
+#    wetter- und leistungsgeführten zusätzlich eine Hysterese. Wer das
+#    herausnimmt und alle 30 Sekunden schreiben lässt, zerstört die
+#    Steuerung.
+
+automation:
+  # ---------------------------------------------------------------
+  # 1 | Warmwasser nur in einem Zeitfenster
+  #
+  # Der einfachste Gewinn: Warmwasser dann bereiten, wenn es draußen am
+  # wärmsten ist. Die Wärmepumpe arbeitet dann gegen die kleinste
+  # Temperaturdifferenz und braucht für dieselbe Speicherladung weniger
+  # Strom.
+  # ---------------------------------------------------------------
+  - alias: Warmondo - Warmwasserfenster
+    description: Gibt die Warmwasserbereitung nur zwischen 11 und 15 Uhr frei.
+    mode: single
+    triggers:
+      - trigger: time
+        at: "11:00:00"
+        variables:
+          freigabe: true
+      - trigger: time
+        at: "15:00:00"
+        variables:
+          freigabe: false
+    conditions:
+      # Nicht schreiben, wenn der Schalter schon richtig steht.
+      - condition: template
+        value_template: >
+          {{ is_state('switch.warmondo_warmwasser', 'on') != freigabe }}
+    actions:
+      - action: "switch.turn_{{ 'on' if freigabe else 'off' }}"
+        target:
+          entity_id: switch.warmondo_warmwasser
+
+  # ---------------------------------------------------------------
+  # 2 | Warmwasser aus PV-Überschuss
+  #
+  # Statt der Uhr entscheidet der Wechselrichter. Sobald genug
+  # Überschuss anliegt, geht Warmwasser frei und der Leistungsmodus auf
+  # "boost", damit die Anlage den Überschuss auch wirklich abnimmt.
+  #
+  # `for` ist hier kein Schönheitsfehler: Ohne die zehn Minuten schaltet
+  # die Automation bei jeder Wolke hin und her.
+  #
+  # Wer SG-Ready verdrahtet hat, braucht diese Automation nicht — dann
+  # macht die Regelung das selbst. Diese hier ist für alle anderen.
+  # ---------------------------------------------------------------
+  - alias: Warmondo - Warmwasser bei PV-Überschuss
+    description: Lädt den Warmwasserspeicher, solange der Überschuss reicht.
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.pv_ueberschuss
+        above: 2000
+        for: "00:10:00"
+        variables:
+          ueberschuss: true
+      # Abschaltschwelle deutlich tiefer als die Einschaltschwelle —
+      # sonst pendelt die Anlage um einen einzigen Wert herum.
+      - trigger: numeric_state
+        entity_id: sensor.pv_ueberschuss
+        below: 800
+        for: "00:10:00"
+        variables:
+          ueberschuss: false
+    conditions:
+      - condition: template
+        value_template: >
+          {{ is_state('switch.warmondo_warmwasser', 'on') != ueberschuss }}
+    actions:
+      - action: "switch.turn_{{ 'on' if ueberschuss else 'off' }}"
+        target:
+          entity_id: switch.warmondo_warmwasser
+      - action: select.select_option
+        target:
+          entity_id: select.warmondo_leistungsmodus
+        data:
+          option: "{{ 'boost' if ueberschuss else 'standard' }}"
+
+  # ---------------------------------------------------------------
+  # 3 | Vorheizen vor dem Kälteeinbruch
+  #
+  # Ein Gebäude mit Fußbodenheizung speichert Wärme über Stunden. Wer
+  # anhebt, bevor es kalt wird, verteilt die Arbeit auf wärmere Stunden
+  # mit besserer Arbeitszahl, statt sie in die kälteste Nacht zu legen.
+  #
+  # ACHTUNG, hier liegt der wichtigste Vorbehalt: Läuft die Zone auf
+  # einer Heizkurve, kommt die Vorlauftemperatur aus der Kurve, und ein
+  # geschriebener Vorlauf-Sollwert bleibt wirkungslos. Diese Automation
+  # schreibt deshalb den RAUM-Sollwert. Ob das an jeder Anlage der
+  # richtige Hebel ist, hängt von der Betriebsart ab — vor dem
+  # Scharfschalten einmal von Hand ausprobieren und nachsehen, ob sich
+  # "Kennlinien-Vorlauftemperatur" bewegt.
+  #
+  # Die Prognose kommt aus einer Wetter-Integration. `met.no` bringt
+  # Home Assistant mit, den DWD gibt es über HACS. Der Name der
+  # weather-Entität unten muss angepasst werden.
+  # ---------------------------------------------------------------
+  - alias: Warmondo - Vorheizen vor Kälteeinbruch
+    description: Hebt den Raum-Sollwert an, wenn die nächsten zwei Tage kalt werden.
+    mode: single
+    triggers:
+      # Viermal am Tag reicht völlig. Eine Prognose ändert sich nicht
+      # minütlich, und jeder Lauf kann einen Schreibvorgang auslösen.
+      - trigger: time_pattern
+        hours: "/6"
+    actions:
+      - action: weather.get_forecasts
+        target:
+          entity_id: weather.dwd
+        data:
+          type: hourly
+        response_variable: prognose
+      - variables:
+          minimum: >
+            {{ prognose['weather.dwd'].forecast[:48]
+               | map(attribute='temperature') | list | min }}
+          # Drei Stufen statt einer stetigen Formel: so gibt es höchstens
+          # zwei Schreibvorgänge am Tag, auch wenn die Prognose zappelt.
+          soll: >
+            {% if minimum | float <= -5 %} 23
+            {% elif minimum | float <= 2 %} 22
+            {% else %} 21 {% endif %}
+      - condition: template
+        value_template: >
+          {{ states('number.warmondo_heizen_raum_soll') | int(0) != soll | int }}
+      - action: number.set_value
+        target:
+          entity_id: number.warmondo_heizen_raum_soll
+        data:
+          value: "{{ soll | int }}"
+
+  # ---------------------------------------------------------------
+  # 4 | Nachtabsenkung
+  #
+  # Lohnt sich bei Fußbodenheizung nur in Maßen: Ein Estrich, der nachts
+  # auskühlt, muss morgens mit höherer Vorlauftemperatur zurückgeholt
+  # werden, und das kostet mehr, als die Absenkung einspart. Zwei Grad
+  # sind eine vertretbare Größenordnung, fünf sind es nicht.
+  # ---------------------------------------------------------------
+  - alias: Warmondo - Nachtabsenkung
+    description: Senkt den Raum-Sollwert nachts um zwei Grad.
+    mode: single
+    triggers:
+      - trigger: time
+        at: "22:00:00"
+        variables:
+          soll: 19
+      - trigger: time
+        at: "05:00:00"
+        variables:
+          soll: 21
+    conditions:
+      - condition: template
+        value_template: >
+          {{ states('number.warmondo_heizen_raum_soll') | int(0) != soll | int }}
+    actions:
+      - action: number.set_value
+        target:
+          entity_id: number.warmondo_heizen_raum_soll
+        data:
+          value: "{{ soll | int }}"
+
+  # ---------------------------------------------------------------
+  # 5 | Urlaub
+  #
+  # Die Regelung hat dafür einen eigenen Schalter, der mehr tut als ein
+  # abgesenkter Sollwert: Er hält den Frostschutz aktiv und fährt die
+  # Anlage geordnet herunter. Deshalb wird hier der Schalter geschaltet
+  # und nicht an den Sollwerten gedreht.
+  #
+  # Ausgelöst über eine Personengruppe. Wer das nicht nutzt, nimmt einen
+  # input_boolean und schaltet ihn von Hand.
+  # ---------------------------------------------------------------
+  - alias: Warmondo - Urlaubsschaltung
+    description: Schaltet in den Urlaubsbetrieb, wenn lange niemand zu Hause ist.
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: group.bewohner
+        to: "not_home"
+        for: "12:00:00"
+        variables:
+          abwesend: true
+      - trigger: state
+        entity_id: group.bewohner
+        to: "home"
+        variables:
+          abwesend: false
+    conditions:
+      - condition: template
+        value_template: >
+          {{ is_state('switch.warmondo_urlaub_abwesend', 'on') != abwesend }}
+    actions:
+      - action: "switch.turn_{{ 'on' if abwesend else 'off' }}"
+        target:
+          entity_id: switch.warmondo_urlaub_abwesend

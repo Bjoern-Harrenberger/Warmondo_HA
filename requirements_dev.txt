@@ -1,0 +1,5 @@
+-r requirements_lint.txt
+colorlog==6.10.1
+homeassistant==2026.6.4
+# Runtime dependency of the integration, see manifest.json.
+modbus-connection[tmodbus]>=4.8.1,<5

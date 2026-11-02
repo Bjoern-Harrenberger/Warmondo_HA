@@ -1,0 +1,1121 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Warmondo heat pump",
+                "description": "Adds a Warmondo heat pump by MULTIBETON GmbH. Home Assistant talks to the Modbus TCP gateway at the controller, not to the heat pump directly.\n\nIn most cases the gateway's IP address is all it takes. Guide: [setup help]({docs_url}). MULTIBETON service: {support_phone}, {support_email}.",
+                "data": {
+                    "name": "Name",
+                    "model": "Model",
+                    "host": "Gateway IP address"
+                },
+                "data_description": {
+                    "name": "Optional. Becomes the device name. Only needed when more than one heat pump is added.",
+                    "model": "The model from the type plate (WM-S to WM-XL). The controller does not report it, so pick it here.",
+                    "host": "The fixed IP address of the Modbus TCP gateway, for example 192.168.1.50. It is shown in the gateway's web interface or in your router's device list."
+                },
+                "sections": {
+                    "advanced": {
+                        "name": "Advanced",
+                        "description": "Only change these if the gateway is set up differently from the usual.",
+                        "data": {
+                            "port": "Port",
+                            "unit_id": "Controller Modbus address",
+                            "framer": "Wire framing",
+                            "read_only": "Read only"
+                        },
+                        "data_description": {
+                            "port": "TCP port of the gateway. Usually 502.",
+                            "unit_id": "Modbus address of the controller behind the gateway. Usually 1.",
+                            "framer": "\"socket\" if the gateway speaks Modbus TCP (usual), \"rtu\" if it passes the controller's frames through. If the connection fails, try the other one first.",
+                            "read_only": "Creates no switches, setpoints, selects or buttons. The plant cannot be adjusted from Home Assistant - for demonstration rigs or monitoring only."
+                        }
+                    }
+                }
+            },
+            "reconfigure": {
+                "title": "Reconfigure Warmondo heat pump",
+                "description": "Change the settings of this heat pump. Devices, entities and their IDs are kept, so automations and dashboards keep working.\n\nGuide: [setup help]({docs_url}).",
+                "data": {
+                    "name": "Name",
+                    "model": "Model",
+                    "host": "Gateway IP address"
+                },
+                "data_description": {
+                    "name": "Optional. Becomes the device name. Only needed when more than one heat pump is added.",
+                    "model": "The model from the type plate (WM-S to WM-XL).",
+                    "host": "The fixed IP address of the Modbus TCP gateway."
+                },
+                "sections": {
+                    "advanced": {
+                        "name": "Advanced",
+                        "description": "Only change these if the gateway is set up differently from the usual.",
+                        "data": {
+                            "port": "Port",
+                            "unit_id": "Controller Modbus address",
+                            "framer": "Wire framing",
+                            "read_only": "Read only"
+                        },
+                        "data_description": {
+                            "port": "TCP port of the gateway. Usually 502.",
+                            "unit_id": "Modbus address of the controller behind the gateway. Usually 1.",
+                            "framer": "\"socket\" if the gateway speaks Modbus TCP (usual), \"rtu\" if it passes the controller's frames through.",
+                            "read_only": "Creates no switches, setpoints, selects or buttons. The plant cannot be adjusted from Home Assistant."
+                        }
+                    }
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Cannot reach the controller. Check that the gateway is powered and reachable at this IP address. If it is, try the other wire framing under \"Advanced\".",
+            "unknown": "Unexpected error. Check the log or contact MULTIBETON service."
+        },
+        "abort": {
+            "already_configured": "This heat pump is already configured.",
+            "reconfigure_successful": "The settings have been saved."
+        }
+    },
+    "entity": {
+        "image": {
+            "cooling_curve_zone_a": {
+                "name": "Cooling curve, zone A"
+            },
+            "cooling_curve_zone_b": {
+                "name": "Cooling curve, zone B"
+            },
+            "heating_curve_zone_a": {
+                "name": "Heating curve, zone A"
+            },
+            "heating_curve_zone_b": {
+                "name": "Heating curve, zone B"
+            }
+        },
+        "binary_sensor": {
+            "aux_heating_active": {
+                "name": "Auxiliary heating running"
+            },
+            "cell_pump": {
+                "name": "Cell circulation pump"
+            },
+            "cooling_switch": {
+                "name": "Cooling switch"
+            },
+            "defrost_indication": {
+                "name": "Defrost indication"
+            },
+            "defrosting": {
+                "name": "Defrosting"
+            },
+            "dhw_on": {
+                "name": "DHW"
+            },
+            "dhw_switch": {
+                "name": "Domestic hot water switch"
+            },
+            "disinfection_enabled": {
+                "name": "Scheduled disinfection (setpoint)"
+            },
+            "external_heat_source": {
+                "name": "External heat source"
+            },
+            "external_pump": {
+                "name": "External circulation pump"
+            },
+            "fault_indication": {
+                "name": "Fault indication"
+            },
+            "floor_heating_present": {
+                "name": "Floor heating present"
+            },
+            "forced_aux_heater": {
+                "name": "Auxiliary heater forced on"
+            },
+            "forced_dhw": {
+                "name": "Forced DHW"
+            },
+            "forced_external_source": {
+                "name": "External heat source forced on"
+            },
+            "forced_tank_heater": {
+                "name": "Tank heater forced on"
+            },
+            "frost_protection": {
+                "name": "Frost protection"
+            },
+            "heating_switch": {
+                "name": "Heating switch"
+            },
+            "mixing_pump": {
+                "name": "Mixing pump"
+            },
+            "mixing_valve": {
+                "name": "Mixing valve"
+            },
+            "module_aux_heater_1": {
+                "name": "Auxiliary heater 1"
+            },
+            "module_aux_heater_2": {
+                "name": "Auxiliary heater 2"
+            },
+            "module_aux_heater_feedback": {
+                "name": "Auxiliary heater feedback"
+            },
+            "module_base_pan_heater": {
+                "name": "Base pan heater"
+            },
+            "module_circulation_pump": {
+                "name": "Circulation pump"
+            },
+            "module_compressor_relay": {
+                "name": "Compressor relay"
+            },
+            "module_crankcase_heater_1": {
+                "name": "Crankcase heater 1"
+            },
+            "module_crankcase_heater_2": {
+                "name": "Crankcase heater 2"
+            },
+            "module_defrosting": {
+                "name": "Defrosting"
+            },
+            "module_enabled": {
+                "name": "Enabled"
+            },
+            "module_evi_valve": {
+                "name": "Injection valve (EVI)"
+            },
+            "module_flow_switch": {
+                "name": "Flow switch"
+            },
+            "module_frost_protection_tape": {
+                "name": "Frost protection tape"
+            },
+            "module_high_pressure_switch": {
+                "name": "High-pressure switch"
+            },
+            "module_low_pressure_switch": {
+                "name": "Low-pressure switch"
+            },
+            "module_problem": {
+                "name": "Problem"
+            },
+            "module_reversing_valve": {
+                "name": "Reversing valve"
+            },
+            "problem": {
+                "name": "Problem"
+            },
+            "remote_switch": {
+                "name": "Remote switch"
+            },
+            "return_pump": {
+                "name": "Return circulation pump"
+            },
+            "scheduled_disinfection": {
+                "name": "Scheduled disinfection"
+            },
+            "smart_grid_evu": {
+                "name": "EVU signal"
+            },
+            "smart_grid_sg": {
+                "name": "SG signal"
+            },
+            "solar_pump": {
+                "name": "Solar pump"
+            },
+            "solar_signal": {
+                "name": "Solar signal"
+            },
+            "system_on": {
+                "name": "Main switch"
+            },
+            "tank_heater": {
+                "name": "Tank heater"
+            },
+            "tank_heater_feedback": {
+                "name": "Tank heater feedback"
+            },
+            "thermostat_c": {
+                "name": "Thermostat signal C (cooling)"
+            },
+            "thermostat_h": {
+                "name": "Thermostat signal H (heating)"
+            },
+            "three_way_valve_1": {
+                "name": "Three-way valve 1"
+            },
+            "three_way_valve_2": {
+                "name": "Three-way valve 2"
+            },
+            "three_way_valve_3": {
+                "name": "Three-way valve 3"
+            },
+            "vacation_away": {
+                "name": "Vacation away"
+            },
+            "vacation_home": {
+                "name": "Vacation home"
+            },
+            "zone_a_on": {
+                "name": "Zone A"
+            },
+            "zone_b_on": {
+                "name": "Zone B"
+            }
+        },
+        "button": {
+            "module_defrost_command": {
+                "name": "Start defrost"
+            },
+            "reset_fault": {
+                "name": "Reset fault"
+            }
+        },
+        "number": {
+            "cooling_room_setpoint_zone_a": {
+                "name": "Cooling room setpoint"
+            },
+            "cooling_room_setpoint_zone_b": {
+                "name": "Cooling room setpoint (zone B)"
+            },
+            "cooling_setpoint_zone_a": {
+                "name": "Cooling setpoint"
+            },
+            "cooling_setpoint_zone_b": {
+                "name": "Cooling setpoint (zone B)"
+            },
+            "curve9_cooling_ambient_1": {
+                "name": "Curve 9 (custom) cooling ambient temp. 1"
+            },
+            "curve9_cooling_ambient_2": {
+                "name": "Curve 9 (custom) cooling ambient temp. 2"
+            },
+            "curve9_cooling_outlet_1": {
+                "name": "Curve 9 (custom) cooling outlet temp. 1"
+            },
+            "curve9_cooling_outlet_2": {
+                "name": "Curve 9 (custom) cooling outlet temp. 2"
+            },
+            "curve9_heating_ambient_1": {
+                "name": "Curve 9 (custom) heating ambient temp. 1"
+            },
+            "curve9_heating_ambient_2": {
+                "name": "Curve 9 (custom) heating ambient temp. 2"
+            },
+            "curve9_heating_outlet_1": {
+                "name": "Curve 9 (custom) heating outlet temp. 1"
+            },
+            "curve9_heating_outlet_2": {
+                "name": "Curve 9 (custom) heating outlet temp. 2"
+            },
+            "dhw_setpoint": {
+                "name": "DHW setpoint"
+            },
+            "disinfection_hold_time_min": {
+                "name": "Disinfection hold time"
+            },
+            "disinfection_max_interval_min": {
+                "name": "Disinfection max. interval"
+            },
+            "disinfection_setpoint": {
+                "name": "Disinfection temperature"
+            },
+            "heating_room_setpoint_zone_a": {
+                "name": "Heating room setpoint"
+            },
+            "heating_room_setpoint_zone_b": {
+                "name": "Heating room setpoint (zone B)"
+            },
+            "heating_setpoint_zone_a": {
+                "name": "Heating setpoint"
+            },
+            "heating_setpoint_zone_b": {
+                "name": "Heating setpoint (zone B)"
+            }
+        },
+        "select": {
+            "control_mode": {
+                "name": "Control mode",
+                "state": {
+                    "cool": "Cooling",
+                    "heat": "Heating",
+                    "auto": "Auto"
+                }
+            },
+            "curve_select_cooling_zone_a": {
+                "name": "Cooling curve (zone A)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_cooling_zone_b": {
+                "name": "Cooling curve (zone B)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_heating_zone_a": {
+                "name": "Heating curve (zone A)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_heating_zone_b": {
+                "name": "Heating curve (zone B)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "power_mode": {
+                "name": "Power mode",
+                "state": {
+                    "standard": "Standard",
+                    "boost": "Boost",
+                    "eco": "Eco",
+                    "auto": "Auto"
+                }
+            }
+        },
+        "sensor": {
+            "active_capacity": {
+                "name": "Thermal output"
+            },
+            "active_faults": {
+                "name": "Active faults"
+            },
+            "active_power_input": {
+                "name": "Power input"
+            },
+            "control_mode": {
+                "name": "Control mode",
+                "state": {
+                    "cool": "Cooling",
+                    "heat": "Heating",
+                    "auto": "Auto"
+                }
+            },
+            "cooling_room_setpoint_zone_a": {
+                "name": "Cooling room setpoint"
+            },
+            "cooling_room_setpoint_zone_b": {
+                "name": "Cooling room setpoint (zone B)"
+            },
+            "cooling_setpoint_zone_a": {
+                "name": "Cooling setpoint"
+            },
+            "cooling_setpoint_zone_b": {
+                "name": "Cooling setpoint (zone B)"
+            },
+            "cop_cooling": {
+                "name": "Coefficient of performance, cooling"
+            },
+            "cop_current": {
+                "name": "Coefficient of performance"
+            },
+            "cop_dhw": {
+                "name": "Coefficient of performance, DHW"
+            },
+            "cop_heating": {
+                "name": "Coefficient of performance, heating"
+            },
+            "curve9_cooling_ambient_1": {
+                "name": "Curve 9 (custom) cooling ambient temp. 1"
+            },
+            "curve9_cooling_ambient_2": {
+                "name": "Curve 9 (custom) cooling ambient temp. 2"
+            },
+            "curve9_cooling_outlet_1": {
+                "name": "Curve 9 (custom) cooling outlet temp. 1"
+            },
+            "curve9_cooling_outlet_2": {
+                "name": "Curve 9 (custom) cooling outlet temp. 2"
+            },
+            "curve9_heating_ambient_1": {
+                "name": "Curve 9 (custom) heating ambient temp. 1"
+            },
+            "curve9_heating_ambient_2": {
+                "name": "Curve 9 (custom) heating ambient temp. 2"
+            },
+            "curve9_heating_outlet_1": {
+                "name": "Curve 9 (custom) heating outlet temp. 1"
+            },
+            "curve9_heating_outlet_2": {
+                "name": "Curve 9 (custom) heating outlet temp. 2"
+            },
+            "curve_select_cooling_zone_a": {
+                "name": "Cooling curve (zone A)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_cooling_zone_b": {
+                "name": "Cooling curve (zone B)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_heating_zone_a": {
+                "name": "Heating curve (zone A)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "curve_select_heating_zone_b": {
+                "name": "Heating curve (zone B)",
+                "state": {
+                    "disabled": "Disabled",
+                    "low_temp_1": "Low-temperature curve 1",
+                    "low_temp_2": "Low-temperature curve 2",
+                    "low_temp_3": "Low-temperature curve 3",
+                    "low_temp_4": "Low-temperature curve 4",
+                    "low_temp_5": "Low-temperature curve 5",
+                    "low_temp_6": "Low-temperature curve 6",
+                    "low_temp_7": "Low-temperature curve 7",
+                    "low_temp_8": "Low-temperature curve 8",
+                    "high_temp_1": "High-temperature curve 1",
+                    "high_temp_2": "High-temperature curve 2",
+                    "high_temp_3": "High-temperature curve 3",
+                    "high_temp_4": "High-temperature curve 4",
+                    "high_temp_5": "High-temperature curve 5",
+                    "high_temp_6": "High-temperature curve 6",
+                    "high_temp_7": "High-temperature curve 7",
+                    "high_temp_8": "High-temperature curve 8",
+                    "curve_9": "Curve 9 (user-defined)",
+                    "curve_10": "Curve 10 (factory)",
+                    "curve_11": "Curve 11 (slope curve)",
+                    "curve_12": "Curve 12 (slope curve)"
+                }
+            },
+            "dhw_setpoint": {
+                "name": "DHW setpoint"
+            },
+            "disinfection_hold_time_min": {
+                "name": "Disinfection hold time"
+            },
+            "disinfection_max_interval_min": {
+                "name": "Disinfection max. interval"
+            },
+            "disinfection_setpoint": {
+                "name": "Disinfection temperature"
+            },
+            "electric_energy": {
+                "name": "Electrical energy"
+            },
+            "electric_energy_24h": {
+                "name": "Electrical energy 24 hours"
+            },
+            "electric_energy_30d": {
+                "name": "Electrical energy 30 days"
+            },
+            "electric_energy_365d": {
+                "name": "Electrical energy 365 days"
+            },
+            "electric_energy_7d": {
+                "name": "Electrical energy 7 days"
+            },
+            "heat_energy": {
+                "name": "Heat energy"
+            },
+            "heat_energy_24h": {
+                "name": "Heat energy 24 hours"
+            },
+            "heat_energy_30d": {
+                "name": "Heat energy 30 days"
+            },
+            "heat_energy_365d": {
+                "name": "Heat energy 365 days"
+            },
+            "heat_energy_7d": {
+                "name": "Heat energy 7 days"
+            },
+            "heat_meter_flow_cumulative_raw": {
+                "name": "Heat meter cumulative flow (raw, unscaled)"
+            },
+            "heat_meter_flow_instant_raw": {
+                "name": "Heat meter instantaneous flow (raw, unscaled)"
+            },
+            "heat_meter_flow_temp_raw": {
+                "name": "Heat meter flow temperature (raw, unscaled)"
+            },
+            "heat_meter_heat_cumulative_raw": {
+                "name": "Heat meter cumulative heat (raw, unscaled)"
+            },
+            "heat_meter_power_instant_raw": {
+                "name": "Heat meter instantaneous power (raw, unscaled)"
+            },
+            "heat_meter_return_temp_raw": {
+                "name": "Heat meter return temperature (raw, unscaled)"
+            },
+            "heat_meter_status": {
+                "name": "Heat meter status"
+            },
+            "heating_curve_cooling_max_zone_a": {
+                "name": "Cooling curve max (zone A)"
+            },
+            "heating_curve_cooling_max_zone_b": {
+                "name": "Cooling curve max (zone B)"
+            },
+            "heating_curve_cooling_min_zone_a": {
+                "name": "Cooling curve min (zone A)"
+            },
+            "heating_curve_cooling_min_zone_b": {
+                "name": "Cooling curve min (zone B)"
+            },
+            "heating_curve_heating_max_zone_a": {
+                "name": "Heating curve max (zone A)"
+            },
+            "heating_curve_heating_max_zone_b": {
+                "name": "Heating curve max (zone B)"
+            },
+            "heating_curve_heating_min_zone_a": {
+                "name": "Heating curve min (zone A)"
+            },
+            "heating_curve_heating_min_zone_b": {
+                "name": "Heating curve min (zone B)"
+            },
+            "heating_curve_slope_cooling_max_zone_a": {
+                "name": "Slope curve cooling max (zone A)"
+            },
+            "heating_curve_slope_cooling_max_zone_b": {
+                "name": "Slope curve cooling max (zone B)"
+            },
+            "heating_curve_slope_cooling_min_zone_a": {
+                "name": "Slope curve cooling min (zone A)"
+            },
+            "heating_curve_slope_cooling_min_zone_b": {
+                "name": "Slope curve cooling min (zone B)"
+            },
+            "heating_curve_slope_heating_max_zone_a": {
+                "name": "Slope curve heating max (zone A)"
+            },
+            "heating_curve_slope_heating_max_zone_b": {
+                "name": "Slope curve heating max (zone B)"
+            },
+            "heating_curve_slope_heating_min_zone_a": {
+                "name": "Slope curve heating min (zone A)"
+            },
+            "heating_curve_slope_heating_min_zone_b": {
+                "name": "Slope curve heating min (zone B)"
+            },
+            "heating_room_setpoint_zone_a": {
+                "name": "Heating room setpoint"
+            },
+            "heating_room_setpoint_zone_b": {
+                "name": "Heating room setpoint (zone B)"
+            },
+            "heating_setpoint_zone_a": {
+                "name": "Heating setpoint"
+            },
+            "heating_setpoint_zone_b": {
+                "name": "Heating setpoint (zone B)"
+            },
+            "highest_high_pressure": {
+                "name": "Highest high-side pressure"
+            },
+            "lowest_low_pressure": {
+                "name": "Lowest low-side pressure"
+            },
+            "module_active_faults": {
+                "name": "Active faults"
+            },
+            "module_actual_superheat": {
+                "name": "Superheat"
+            },
+            "module_after_valve_temp": {
+                "name": "Temperature after valve"
+            },
+            "module_ambient_temp": {
+                "name": "Ambient temperature"
+            },
+            "module_aux_expansion_valve_opening": {
+                "name": "Auxiliary expansion valve opening"
+            },
+            "module_compressor_cop": {
+                "name": "Compressor coefficient of performance"
+            },
+            "module_compressor_runtime": {
+                "name": "Compressor runtime (raw)"
+            },
+            "module_condensation_saturation_temp": {
+                "name": "Condensation saturation temperature"
+            },
+            "module_current_power": {
+                "name": "Thermal output"
+            },
+            "module_discharge_gas_temp": {
+                "name": "Discharge gas temperature"
+            },
+            "module_evaporation_saturation_temp": {
+                "name": "Evaporation saturation temperature"
+            },
+            "module_fan_1_speed": {
+                "name": "Fan speed"
+            },
+            "module_fin_temp": {
+                "name": "Fin temperature"
+            },
+            "module_high_pressure": {
+                "name": "High pressure"
+            },
+            "module_inverter_actual_speed": {
+                "name": "Compressor speed"
+            },
+            "module_inverter_fault_code": {
+                "name": "Inverter fault code"
+            },
+            "module_inverter_input_current": {
+                "name": "Inverter input current"
+            },
+            "module_inverter_module_temp": {
+                "name": "Inverter module temperature"
+            },
+            "module_inverter_output_current": {
+                "name": "Inverter output current"
+            },
+            "module_inverter_output_power": {
+                "name": "Inverter output power"
+            },
+            "module_inverter_output_voltage": {
+                "name": "Inverter output voltage"
+            },
+            "module_inverter_target_speed": {
+                "name": "Compressor target speed"
+            },
+            "module_low_pressure": {
+                "name": "Low pressure"
+            },
+            "module_main_expansion_valve_opening": {
+                "name": "Main expansion valve opening"
+            },
+            "module_phe_flow_temp": {
+                "name": "Flow temperature"
+            },
+            "module_phe_return_temp": {
+                "name": "Return temperature"
+            },
+            "module_pump_flow": {
+                "name": "Water flow"
+            },
+            "module_suction_gas_temp": {
+                "name": "Suction gas temperature"
+            },
+            "module_target_superheat": {
+                "name": "Target superheat"
+            },
+            "module_total_flow_temp": {
+                "name": "Total flow temperature"
+            },
+            "module_water_pressure": {
+                "name": "Water pressure"
+            },
+            "power_aux_heater_power": {
+                "name": "Auxiliary heater power"
+            },
+            "power_aux_heater_power_configured": {
+                "name": "Auxiliary heater configured power"
+            },
+            "power_cooling_capacity": {
+                "name": "Cooling capacity"
+            },
+            "power_cooling_power_input": {
+                "name": "Cooling power input"
+            },
+            "power_dhw_capacity": {
+                "name": "DHW heating capacity"
+            },
+            "power_dhw_power_input": {
+                "name": "DHW power input"
+            },
+            "power_heating_capacity": {
+                "name": "Heating capacity"
+            },
+            "power_heating_power_input": {
+                "name": "Heating power input"
+            },
+            "power_mode": {
+                "name": "Power mode",
+                "state": {
+                    "standard": "Standard",
+                    "boost": "Boost",
+                    "eco": "Eco",
+                    "auto": "Auto"
+                }
+            },
+            "power_power_consumption": {
+                "name": "Power consumption (plant register)"
+            },
+            "running_compressors": {
+                "name": "Compressors running"
+            },
+            "sensors_ambient_temp": {
+                "name": "Ambient temperature"
+            },
+            "sensors_buffer_bottom_temp": {
+                "name": "Buffer tank bottom temperature"
+            },
+            "sensors_buffer_top_temp": {
+                "name": "Buffer tank top temperature"
+            },
+            "sensors_climate_flow_temp": {
+                "name": "Climate flow temperature"
+            },
+            "sensors_curve_flow_temp_zone_a": {
+                "name": "Curve flow temperature (zone A)"
+            },
+            "sensors_curve_flow_temp_zone_a_corrected": {
+                "name": "Curve flow temperature corrected (zone A)"
+            },
+            "sensors_curve_flow_temp_zone_b": {
+                "name": "Curve flow temperature (zone B)"
+            },
+            "sensors_curve_flow_temp_zone_b_corrected": {
+                "name": "Curve flow temperature corrected (zone B)"
+            },
+            "sensors_dhw_tank_temp": {
+                "name": "DHW tank temperature"
+            },
+            "sensors_floor_heating_flow_temp": {
+                "name": "Floor heating flow temperature"
+            },
+            "sensors_mean_ambient_temp": {
+                "name": "Mean ambient temperature"
+            },
+            "sensors_return_temp_zone_a": {
+                "name": "Zone A return temperature"
+            },
+            "sensors_room_temp": {
+                "name": "Room temperature"
+            },
+            "sensors_solar_temp": {
+                "name": "Solar temperature"
+            },
+            "sensors_system_flow_temp": {
+                "name": "System flow temperature"
+            },
+            "system_io_mixing_valve_opening": {
+                "name": "Mixing valve opening"
+            },
+            "system_io_mixing_valve_target_opening": {
+                "name": "Mixing valve target opening"
+            },
+            "system_io_valve_1_status": {
+                "name": "Three-way valve 1 status"
+            },
+            "system_io_valve_2_status": {
+                "name": "Three-way valve 2 status"
+            },
+            "system_io_valve_3_status": {
+                "name": "Three-way valve 3 status"
+            },
+            "system_status_aux_heater_runtime_min": {
+                "name": "Auxiliary heater runtime"
+            },
+            "system_status_aux_heater_starts": {
+                "name": "Auxiliary heater starts"
+            },
+            "system_status_compressor_idle_continuous_min": {
+                "name": "Compressor continuous idle time"
+            },
+            "system_status_compressor_runtime_continuous_min": {
+                "name": "Compressor continuous runtime"
+            },
+            "system_status_compressor_runtime_cooling_min": {
+                "name": "Compressor cooling runtime"
+            },
+            "system_status_compressor_runtime_dhw_min": {
+                "name": "Compressor DHW runtime"
+            },
+            "system_status_compressor_runtime_heating_min": {
+                "name": "Compressor heating runtime"
+            },
+            "system_status_compressor_runtime_total_min": {
+                "name": "Compressor total runtime"
+            },
+            "system_status_compressor_starts": {
+                "name": "Compressor starts"
+            },
+            "system_status_configured_mode": {
+                "name": "Configured mode",
+                "state": {
+                    "cool": "Cooling",
+                    "heat": "Heating",
+                    "auto": "Auto"
+                }
+            },
+            "system_status_cooling_starts": {
+                "name": "Cooling mode starts"
+            },
+            "system_status_current_mode": {
+                "name": "Current mode",
+                "state": {
+                    "none": "None",
+                    "cooling": "Cooling",
+                    "heating": "Heating",
+                    "dhw": "Domestic hot water"
+                }
+            },
+            "system_status_curve_ambient_temp": {
+                "name": "Curve ambient temperature"
+            },
+            "system_status_defrost_count": {
+                "name": "Defrost cycle count"
+            },
+            "system_status_dhw_starts": {
+                "name": "DHW mode starts"
+            },
+            "system_status_heating_starts": {
+                "name": "Heating mode starts"
+            },
+            "system_status_mixing_valve_cycle_time_s": {
+                "name": "Mixing valve cycle time"
+            },
+            "system_status_module_count": {
+                "name": "Module count"
+            },
+            "system_status_operating_state": {
+                "name": "Operating state",
+                "state": {
+                    "standby": "Standby",
+                    "starting": "Starting",
+                    "running": "Running",
+                    "shutting_down": "Shutting down",
+                    "severe_alarm": "Severe alarm"
+                }
+            },
+            "system_status_power_control_actual_temp": {
+                "name": "Power control actual temperature"
+            },
+            "system_status_power_control_target_temp": {
+                "name": "Power control target temperature"
+            },
+            "system_status_pump_flow_max": {
+                "name": "Pump maximum flow"
+            },
+            "system_status_pump_flow_min": {
+                "name": "Pump minimum flow"
+            },
+            "system_status_pump_speed_max": {
+                "name": "Pump maximum speed"
+            },
+            "system_status_pump_speed_min": {
+                "name": "Pump minimum speed"
+            },
+            "system_status_smart_grid_command": {
+                "name": "Smart grid command"
+            },
+            "system_status_smart_grid_status": {
+                "name": "Smart grid status"
+            },
+            "system_status_tank_heater_runtime_min": {
+                "name": "Tank heater runtime"
+            },
+            "system_status_tank_heater_starts": {
+                "name": "Tank heater starts"
+            },
+            "type_parameters_rated_voltage": {
+                "name": "Rated voltage"
+            },
+            "user_parameters_fixed_curve_source": {
+                "name": "Fixed curve source (factory)"
+            },
+            "work_figure_24h": {
+                "name": "Performance factor 24 hours"
+            },
+            "work_figure_30d": {
+                "name": "Performance factor 30 days"
+            },
+            "work_figure_365d": {
+                "name": "Performance factor 365 days"
+            },
+            "work_figure_7d": {
+                "name": "Performance factor 7 days"
+            }
+        },
+        "switch": {
+            "dhw_on": {
+                "name": "DHW"
+            },
+            "disinfection_enabled": {
+                "name": "Scheduled disinfection (setpoint)"
+            },
+            "forced_dhw": {
+                "name": "Forced DHW"
+            },
+            "module_enabled": {
+                "name": "Enabled"
+            },
+            "scheduled_disinfection": {
+                "name": "Scheduled disinfection"
+            },
+            "system_on": {
+                "name": "Main switch"
+            },
+            "vacation_away": {
+                "name": "Vacation away"
+            },
+            "vacation_home": {
+                "name": "Vacation home"
+            },
+            "zone_a_on": {
+                "name": "Zone A"
+            },
+            "zone_b_on": {
+                "name": "Zone B"
+            }
+        }
+    },
+    "device": {
+        "module_master": {
+            "name": "{title} master"
+        },
+        "module_slave": {
+            "name": "{title} slave {module}#"
+        }
+    },
+    "issues": {
+        "model_mismatch": {
+            "title": "Model does not match the plant",
+            "description": "The plant “{title}” reports a rated voltage of {measured} V, but the configured model is {model}, which is a {expected} V unit.\n\nThe model cannot be read over Modbus: it is set with DIP switches on the unit and typed in during setup, so the wrong one was probably picked. Check the designation on the nameplate and change it under Settings → Devices & Services → Warmondo → Reconfigure.\n\nWhile the two contradict each other, the model shown on the dashboard and in the device page is wrong."
+        }
+    }
+}
