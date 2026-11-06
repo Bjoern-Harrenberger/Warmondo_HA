@@ -9,6 +9,11 @@ the active faults of the plant and of each module with the previous refresh:
 * Every change fires the event ``multibeton_fault`` with the same text. The
   blueprint shipped in ``blueprints/`` turns that into a push message on a
   phone, which needs a choice only the owner can make: whose phone.
+* Every change is written to the logbook. The notification is withdrawn
+  once the plant is clear again, and a fault that comes and goes while
+  nobody watches would otherwise leave no trace anyone could find - which
+  is exactly what happened on 2026-11-05, four faults over an hour and a
+  half, gone before they were seen.
 """
 
 from __future__ import annotations
@@ -17,6 +22,7 @@ from typing import TYPE_CHECKING, Any
 
 from homeassistant.components import persistent_notification
 from homeassistant.core import callback
+from homeassistant.helpers import entity_registry as er
 
 from .const import DOMAIN, LOGGER, MANUFACTURER, SUPPORT_EMAIL, SUPPORT_PHONE
 from .multibeton_modbus.enums import StatusFlags
@@ -45,7 +51,7 @@ def _labels(component: object, fields: tuple[str, ...]) -> list[str]:
     return labels
 
 
-def _module_name(module: int) -> str:
+def module_name(module: int) -> str:
     """How the trade calls a module: the first is the master."""
     return "Master" if module == 0 else f"Slave {module:02d}#"
 
@@ -56,7 +62,7 @@ def active_faults(device: Any) -> list[str]:
     faults = [f"Anlage: {label}" for label in system]
     for index, module in enumerate(device.modules):
         faults.extend(
-            f"{_module_name(index)}: {label}"
+            f"{module_name(index)}: {label}"
             for label in _labels(module, MODULE_FAULT_FIELDS)
         )
     status = device.system_status.status_flags
@@ -76,6 +82,34 @@ class FaultNotifier:
         self._entry = entry
         self._previous: list[str] | None = None
         self._notification_id = f"{DOMAIN}_{entry.entry_id}_fault"
+
+    @callback
+    def _async_log(self, current: list[str], previous: list[str]) -> None:
+        """Write what changed to the logbook, on the plant's fault sensor.
+
+        The logbook is where someone looks afterwards, and it keeps what
+        the notification throws away. Guarded, because an installation
+        can run without the logbook - it is part of ``default_config``,
+        not of the core.
+        """
+        if "logbook" not in self._hass.config.components:
+            return
+        from homeassistant.components import logbook  # noqa: PLC0415
+
+        registry = er.async_get(self._hass)
+        entity_id = registry.async_get_entity_id(
+            "sensor", DOMAIN, f"{self._entry.entry_id}_active_faults"
+        )
+        appeared = [fault for fault in current if fault not in previous]
+        gone = [fault for fault in previous if fault not in current]
+        for fault in appeared:
+            logbook.async_log_entry(
+                self._hass, self._entry.title, f"Störung: {fault}", DOMAIN, entity_id
+            )
+        for fault in gone:
+            logbook.async_log_entry(
+                self._hass, self._entry.title, f"behoben: {fault}", DOMAIN, entity_id
+            )
 
     @callback
     def async_update(self) -> None:
@@ -107,6 +141,8 @@ class FaultNotifier:
         # notification above covers a fault that was there all along.
         if previous is None:
             return
+
+        self._async_log(current, previous)
         LOGGER.info("Active faults on %s: %s", title, current or "none")
         new = [fault for fault in current if fault not in (previous or [])]
         self._hass.bus.async_fire(

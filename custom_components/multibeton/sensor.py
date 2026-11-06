@@ -35,7 +35,11 @@ from .energy import (
 from .entity import MultibetonEntity, MultibetonModuleEntity
 from .multibeton_modbus.enums import ConfiguredMode, CurrentMode, OperatingState
 from .multibeton_modbus.fault_labels import fault_label
-from .notify_faults import MODULE_FAULT_FIELDS, SYSTEM_FAULT_FIELDS
+from .notify_faults import (
+    MODULE_FAULT_FIELDS,
+    SYSTEM_FAULT_FIELDS,
+    active_faults,
+)
 from .number import NUMBER_DESCRIPTIONS
 from .select import SELECT_DESCRIPTIONS
 
@@ -1373,16 +1377,25 @@ def _fault_summary(labels: list[str]) -> str:
 
 
 class MultibetonActiveFaultsSensor(MultibetonEntity, SensorEntity):
-    """Summarizes which system-wide fault/alarm flags are currently active.
+    """Summarizes every fault the plant reports, its modules included.
 
-    Aggregates the fully-documented system fault words into one diagnostic
-    sensor rather than exposing one entity per bit. The state and the
-    ``active_faults`` attribute carry the manufacturer's own German wording
-    of each fault (see :mod:`multibeton_modbus.fault_labels`), which is what
-    the controller's display shows; ``active_fault_flags`` keeps the
-    ``word.FLAG`` identifiers alongside it, for automations that should not
-    depend on wording. The faults of each module are on that module's
-    device, see :class:`MultibetonModuleActiveFaultsSensor`.
+    This is the one entity that answers "is anything wrong with this heat
+    pump", and it has to answer for the whole plant: a module's fault is a
+    fault of the plant, even though it is filed on the module's device.
+    Until 2026-11-06 this sensor read the system fault words alone, so a
+    plant whose module reported four faults still said "Keine Störung" -
+    on the customer dashboard as well, which builds its fault line from
+    here. It now uses the same :func:`~.notify_faults.active_faults` the
+    notification uses, so the two can no longer drift apart.
+
+    Each entry names where it comes from, "Anlage:" or "Master:" and
+    "Slave 01#:" and so on. The state and the ``active_faults`` attribute
+    carry the manufacturer's own German wording (see
+    :mod:`multibeton_modbus.fault_labels`), which is what the controller's
+    display shows; ``active_fault_flags`` keeps the ``word.FLAG``
+    identifiers alongside it, for automations that should not depend on
+    wording. Faults per module remain available on their own device, see
+    :class:`MultibetonModuleActiveFaultsSensor`.
     """
 
     _attr_translation_key = "active_faults"
@@ -1394,24 +1407,37 @@ class MultibetonActiveFaultsSensor(MultibetonEntity, SensorEntity):
         super().__init__(coordinator)
         self._attr_unique_id = f"{coordinator.config_entry.entry_id}_active_faults"
 
-    def _active_fault_labels(self) -> list[str]:
-        faults = self.coordinator.data.faults
-        return [
-            fault_label(flag) for flag in _active_flags(faults, _SYSTEM_FAULT_FIELDS)
-        ]
+    def _module_flag_names(self) -> list[str]:
+        """Flag names of every module, prefixed with the module it is on."""
+        names: list[str] = []
+        for index, module in enumerate(self.coordinator.data.modules):
+            names.extend(
+                f"module_{index}.{name}"
+                for name in _active_flag_names(module, _MODULE_FAULT_FIELDS)
+            )
+        return names
 
     @property
     def native_value(self) -> str:
         """Return the fault's own wording, or how many are active."""
-        return _fault_summary(self._active_fault_labels())
+        return _fault_summary(active_faults(self.coordinator.data))
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return the active faults, once as text and once as flag names."""
+        """Return the active faults, once as text and once as flag names.
+
+        The plant's own flags keep the ``word.FLAG`` form they always had;
+        a module's carry ``module_<n>.`` in front, because the same word
+        exists on every module and two of them would otherwise be
+        indistinguishable.
+        """
         faults = self.coordinator.data.faults
         return {
-            "active_faults": self._active_fault_labels(),
-            "active_fault_flags": _active_flag_names(faults, _SYSTEM_FAULT_FIELDS),
+            "active_faults": active_faults(self.coordinator.data),
+            "active_fault_flags": [
+                *_active_flag_names(faults, _SYSTEM_FAULT_FIELDS),
+                *self._module_flag_names(),
+            ],
         }
 
 
