@@ -1,6 +1,6 @@
 # Warmondo für Home Assistant
 
-[![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![Version](https://img.shields.io/github/v/release/Bjoern-Harrenberger/Warmondo_HA)](https://github.com/Bjoern-Harrenberger/Warmondo_HA/releases)
 
 Bindet **Warmondo**-Wärmepumpen der **MULTIBETON GmbH** in Home Assistant ein.
@@ -49,11 +49,9 @@ Einzelgerät und als Kaskade mit bis zu acht Geräten.
 
 [![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Bjoern-Harrenberger&repository=Warmondo_HA&category=integration)
 
-1. Auf den Knopf oben klicken – oder in HACS oben rechts über die drei
-   Punkte → *Benutzerdefinierte Repositories* die Adresse
-   `https://github.com/Bjoern-Harrenberger/Warmondo_HA` mit dem Typ
-   *Integration* hinzufügen.
-2. **Warmondo** in HACS auswählen und *Herunterladen* klicken.
+1. In HACS nach **Warmondo** suchen – oder auf den Knopf oben klicken, der
+   die Seite direkt öffnet.
+2. *Herunterladen* klicken.
 3. Home Assistant neu starten: *Einstellungen → System → Neu starten*.
 
 Updates bietet HACS danach von selbst an.
@@ -276,8 +274,8 @@ values, user-level settings, fault notifications, heating/cooling curve
 diagrams, and energy counters with performance factors over 24 hours, 7,
 30 and 365 days.
 
-Install through HACS as a custom repository (category *Integration*),
-restart, then add **Warmondo** under *Settings → Devices & services*. The
+Search for **Warmondo** in HACS and download it, restart, then add
+**Warmondo** under *Settings → Devices & services*. The
 gateway's IP address is usually all the setup needs. Only parameters the
 controller releases at user level are writable; commissioning, service and
 factory settings are read-only.
