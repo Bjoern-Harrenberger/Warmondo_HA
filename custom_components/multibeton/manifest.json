@@ -2,6 +2,7 @@
   "domain": "multibeton",
   "name": "Warmondo",
   "after_dependencies": [
+    "logbook",
     "recorder"
   ],
   "categories": [
