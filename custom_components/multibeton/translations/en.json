@@ -1115,7 +1115,7 @@
     "issues": {
         "model_mismatch": {
             "title": "Model does not match the plant",
-            "description": "The plant “{title}” reports a rated voltage of {measured} V, but the configured model is {model}, which is a {expected} V unit.\n\nThe model cannot be read over Modbus: it is set with DIP switches on the unit and typed in during setup, so the wrong one was probably picked. Check the designation on the nameplate and change it under Settings → Devices & Services → Warmondo → Reconfigure.\n\nWhile the two contradict each other, the model shown on the dashboard and in the device page is wrong."
+            "description": "The plant “{title}” reports a rated voltage of {measured} V, but the configured model is {model}, which is a {expected} V unit.\n\nThe model cannot be read over Modbus: it is set with DIP switches on the unit and typed in during setup, so the wrong one was probably picked. Check the designation on the nameplate and change it under Settings → Devices & Services → Warmondo Wärmepumpe → Reconfigure.\n\nWhile the two contradict each other, the model shown on the dashboard and in the device page is wrong."
         }
     }
 }

@@ -1115,7 +1115,7 @@
     "issues": {
         "model_mismatch": {
             "title": "Baureihe passt nicht zur Anlage",
-            "description": "Die Anlage „{title}“ meldet eine Nennspannung von {measured} V, eingetragen ist aber die Baureihe {model} — und die ist eine {expected}-V-Ausführung.\n\nDie Baureihe lässt sich über Modbus nicht auslesen; sie wird am Gerät über DIP-Schalter eingestellt und bei der Einrichtung von Hand eingetragen. Vermutlich ist dabei die falsche gewählt worden. Prüfe die Bezeichnung auf dem Typenschild und ändere sie unter Einstellungen → Geräte & Dienste → Warmondo → Neu konfigurieren.\n\nSolange beides sich widerspricht, stimmen die Angaben zur Baureihe im Dashboard und in der Geräteansicht nicht."
+            "description": "Die Anlage „{title}“ meldet eine Nennspannung von {measured} V, eingetragen ist aber die Baureihe {model} — und die ist eine {expected}-V-Ausführung.\n\nDie Baureihe lässt sich über Modbus nicht auslesen; sie wird am Gerät über DIP-Schalter eingestellt und bei der Einrichtung von Hand eingetragen. Vermutlich ist dabei die falsche gewählt worden. Prüfe die Bezeichnung auf dem Typenschild und ändere sie unter Einstellungen → Geräte & Dienste → Warmondo Wärmepumpe → Neu konfigurieren.\n\nSolange beides sich widerspricht, stimmen die Angaben zur Baureihe im Dashboard und in der Geräteansicht nicht."
         }
     }
 }

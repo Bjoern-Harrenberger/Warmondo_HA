@@ -1,6 +1,6 @@
 {
   "domain": "multibeton",
-  "name": "Warmondo",
+  "name": "Warmondo Wärmepumpe",
   "after_dependencies": [
     "logbook",
     "recorder"
@@ -23,5 +23,5 @@
   "requirements": [
     "modbus-connection[tmodbus]>=4.8.1,<5"
   ],
-  "version": "1.2.0"
+  "version": "1.2.1"
 }

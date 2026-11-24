@@ -963,13 +963,13 @@ class WarmondoDashboardStrategy extends HTMLElement {
       return {
         views: [
           {
-            title: "Warmondo",
+            title: "Warmondo Wärmepumpe",
             cards: [
               {
                 type: "markdown",
                 content:
                   "Keine Warmondo-Wärmepumpe gefunden. Bitte zuerst die Integration einrichten: " +
-                  "Einstellungen → Geräte & Dienste → Integration hinzufügen → Warmondo.",
+                  "Einstellungen → Geräte & Dienste → Integration hinzufügen → Warmondo Wärmepumpe.",
               },
             ],
           },
@@ -1007,7 +1007,7 @@ if (!window.customStrategies.some((s) => s.type === "warmondo")) {
   window.customStrategies.push({
     type: "warmondo",
     strategyType: "dashboard",
-    name: "Warmondo",
+    name: "Warmondo Wärmepumpe",
     description:
       "Fertiges Dashboard für Warmondo-Wärmepumpen: Überblick, Kennlinien, Zusatzheizung, Hydraulik, Module und Verlauf.",
     documentationURL: "https://github.com/Bjoern-Harrenberger/Warmondo_HA#dashboard",
@@ -1018,7 +1018,7 @@ window.customCards = window.customCards || [];
 if (!window.customCards.some((c) => c.type === "warmondo-info-card")) {
   window.customCards.push({
     type: "warmondo-info-card",
-    name: "Warmondo Info",
+    name: "Warmondo Wärmepumpe Info",
     description: "Zusammenfassung eines Anlagenwerts, wie im Warmondo-Dashboard.",
   });
 }

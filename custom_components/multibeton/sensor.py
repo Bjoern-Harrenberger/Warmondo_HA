@@ -588,7 +588,7 @@ SENSOR_DESCRIPTIONS: tuple[MultibetonSensorEntityDescription, ...] = (
     # Disabled by default: these numbers are not yet in an engineering unit
     # (see the raw component's docstring), so showing them by default on a
     # dashboard would invite misreading a raw word as kWh/l/h. Enable them
-    # in Settings -> Devices & services -> Warmondo -> entity list once you
+    # in Settings -> Devices & services -> Warmondo Wärmepumpe -> entity list once you
     # want to inspect/calibrate them against real hardware.
     MultibetonSensorEntityDescription(
         key="heat_meter_heat_cumulative_raw",

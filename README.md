@@ -1,4 +1,4 @@
-# Warmondo für Home Assistant
+# Warmondo Wärmepumpe für Home Assistant
 
 [![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![Version](https://img.shields.io/github/v/release/Bjoern-Harrenberger/Warmondo_HA)](https://github.com/Bjoern-Harrenberger/Warmondo_HA/releases)
@@ -49,7 +49,7 @@ Einzelgerät und als Kaskade mit bis zu acht Geräten.
 
 [![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Bjoern-Harrenberger&repository=Warmondo_HA&category=integration)
 
-1. In HACS nach **Warmondo** suchen – oder auf den Knopf oben klicken, der
+1. In HACS nach **Warmondo Wärmepumpe** suchen – oder auf den Knopf oben klicken, der
    die Seite direkt öffnet.
 2. *Herunterladen* klicken.
 3. Home Assistant neu starten: *Einstellungen → System → Neu starten*.
@@ -68,7 +68,7 @@ Add-on *Samba share*, und Home Assistant neu starten.
 [![Integration hinzufügen](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=multibeton)
 
 Auf den Knopf klicken – oder unter *Einstellungen → Geräte & Dienste →
-Integration hinzufügen* nach **Warmondo** suchen. Im Dialog:
+Integration hinzufügen* nach **Warmondo Wärmepumpe** suchen. Im Dialog:
 
 | Feld | Was eintragen |
 | :--- | :--- |
@@ -85,7 +85,7 @@ verstellen – gedacht für Vorführanlagen oder reine Überwachung.
 
 Beim Speichern liest die Integration die Regelung einmal aus. Klappt das,
 ist die Anlage eingerichtet. Spätere Änderungen, etwa eine neue IP-Adresse,
-gehen über *Geräte & Dienste → Warmondo → drei Punkte → Neu konfigurieren*;
+gehen über *Geräte & Dienste → Warmondo Wärmepumpe → drei Punkte → Neu konfigurieren*;
 dabei bleiben alle Geräte, Werte und Verläufe erhalten.
 
 ## Was Sie danach sehen
@@ -143,7 +143,7 @@ werden – und passt sich von selbst an Ihre Anlage an: an den Namen, die
 Baureihe, die Zahl der Wärmepumpen und die tatsächlich verbauten Fühler.
 
 1. *Einstellungen → Dashboards → Dashboard hinzufügen*.
-2. **Warmondo** auswählen, einen Namen vergeben, *Erstellen*.
+2. **Warmondo Wärmepumpe** auswählen, einen Namen vergeben, *Erstellen*.
 
 Es enthält sechs Seiten:
 
@@ -254,7 +254,7 @@ dem Herunterladen Home Assistant neu starten.
 Diagnosedatei sehr. Sie enthält alle Werte, die die Integration aus der
 Regelung liest, und keine Zugangsdaten; die IP-Adresse des Gateways ist
 darin unkenntlich gemacht.
-*Einstellungen → Geräte & Dienste → Warmondo → drei Punkte →
+*Einstellungen → Geräte & Dienste → Warmondo Wärmepumpe → drei Punkte →
 Diagnosedaten herunterladen* und die Datei an
 [waermepumpe@multibeton.de](mailto:waermepumpe@multibeton.de) senden.
 
@@ -274,8 +274,8 @@ values, user-level settings, fault notifications, heating/cooling curve
 diagrams, and energy counters with performance factors over 24 hours, 7,
 30 and 365 days.
 
-Search for **Warmondo** in HACS and download it, restart, then add
-**Warmondo** under *Settings → Devices & services*. The
+Search for **Warmondo Wärmepumpe** in HACS and download it, restart, then add
+**Warmondo Wärmepumpe** under *Settings → Devices & services*. The
 gateway's IP address is usually all the setup needs. Only parameters the
 controller releases at user level are writable; commissioning, service and
 factory settings are read-only.

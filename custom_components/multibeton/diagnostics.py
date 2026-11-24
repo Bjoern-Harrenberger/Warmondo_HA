@@ -1,6 +1,6 @@
 """Diagnostics download for a support case.
 
-Settings -> Devices & services -> Warmondo -> three dots -> Download
+Settings -> Devices & services -> Warmondo Wärmepumpe -> three dots -> Download
 diagnostics produces one file with everything a service technician asks
 for first: integration version, connection settings, module count and every
 value the integration currently reads, each with its register address and

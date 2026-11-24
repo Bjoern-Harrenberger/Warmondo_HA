@@ -1,5 +1,5 @@
 blueprint:
-  name: Warmondo – Störmeldung aufs Handy
+  name: Warmondo Wärmepumpe – Störmeldung aufs Handy
   description: >
     Schickt eine Nachricht auf das Handy, sobald die Warmondo-Wärmepumpe
     eine Störung meldet – mit dem Wortlaut der Regelung und dem Gerät
